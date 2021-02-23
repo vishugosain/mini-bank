@@ -48,6 +48,9 @@ var app = (function () {
     function component_subscribe(component, store, callback) {
         component.$$.on_destroy.push(subscribe(store, callback));
     }
+    function null_to_empty(value) {
+        return value == null ? '' : value;
+    }
     function action_destroyer(action_result) {
         return action_result && is_function(action_result.destroy) ? action_result.destroy : noop;
     }
@@ -83,6 +86,13 @@ var app = (function () {
         node.addEventListener(event, handler, options);
         return () => node.removeEventListener(event, handler, options);
     }
+    function prevent_default(fn) {
+        return function (event) {
+            event.preventDefault();
+            // @ts-ignore
+            return fn.call(this, event);
+        };
+    }
     function attr(node, attribute, value) {
         if (value == null)
             node.removeAttribute(attribute);
@@ -97,6 +107,19 @@ var app = (function () {
     }
     function set_input_value(input, value) {
         input.value = value == null ? '' : value;
+    }
+    function select_option(select, value) {
+        for (let i = 0; i < select.options.length; i += 1) {
+            const option = select.options[i];
+            if (option.__value === value) {
+                option.selected = true;
+                return;
+            }
+        }
+    }
+    function select_value(select) {
+        const selected_option = select.querySelector(':checked') || select.options[0];
+        return selected_option && selected_option.__value;
     }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
@@ -1588,6 +1611,21 @@ var app = (function () {
             addWallet: (wallet) => update(wallets => {
                 wallets = [...wallets, wallet];
                 localStorage.setItem(LOCAL_WALLET, JSON.stringify(wallets));
+                return wallets;
+            }),
+            addTransaction: (transaction, walletId) => update(wallets => {
+                wallets = wallets.map(wallet => {
+                    if (wallet.id === walletId) {
+                        if (wallet.transactions[transaction.duration]) {
+                            wallet.transactions[transaction.duration] = [...wallet.transactions[transaction.duration], transaction];
+                        } else {
+                            wallet.transactions[transaction.duration] = [transaction];
+                        }
+                    }
+                    return wallet;
+                });
+                localStorage.setItem(LOCAL_WALLET, JSON.stringify(wallets));
+                return wallets;
             }),
             reset: () => set([])
         }
@@ -1613,8 +1651,8 @@ var app = (function () {
     		c: function create() {
     			h3 = element("h3");
     			h3.textContent = "No Wallets here.";
-    			attr_dev(h3, "class", "placeholder svelte-cmg8ws");
-    			add_location(h3, file, 18, 8, 554);
+    			attr_dev(h3, "class", "placeholder svelte-171oaqm");
+    			add_location(h3, file, 18, 8, 549);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -1636,7 +1674,7 @@ var app = (function () {
     	return block;
     }
 
-    // (6:4) {#if $wallet.length}
+    // (6:4) {#if $wallet && $wallet.length}
     function create_if_block$1(ctx) {
     	let div;
     	let each_value = /*$wallet*/ ctx[0];
@@ -1655,8 +1693,8 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", "wallet-wrap svelte-cmg8ws");
-    			add_location(div, file, 6, 4, 156);
+    			attr_dev(div, "class", "wallet-wrap svelte-171oaqm");
+    			add_location(div, file, 6, 4, 167);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1700,7 +1738,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(6:4) {#if $wallet.length}",
+    		source: "(6:4) {#if $wallet && $wallet.length}",
     		ctx
     	});
 
@@ -1742,17 +1780,17 @@ var app = (function () {
     			t5 = space();
     			if (img.src !== (img_src_value = "assets/wallet.svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "wallet");
-    			attr_dev(img, "class", "svelte-cmg8ws");
-    			add_location(img, file, 10, 20, 334);
-    			attr_dev(h3, "class", "svelte-cmg8ws");
-    			add_location(h3, file, 11, 20, 397);
-    			attr_dev(h2, "class", "svelte-cmg8ws");
-    			add_location(h2, file, 12, 20, 440);
-    			attr_dev(div, "class", "wallet svelte-cmg8ws");
-    			add_location(div, file, 9, 16, 293);
-    			attr_dev(a, "href", a_href_value = "/" + /*wallet*/ ctx[1].name.toLowerCase());
-    			attr_dev(a, "class", "svelte-cmg8ws");
-    			add_location(a, file, 8, 12, 228);
+    			attr_dev(img, "class", "svelte-171oaqm");
+    			add_location(img, file, 10, 20, 329);
+    			attr_dev(h3, "class", "svelte-171oaqm");
+    			add_location(h3, file, 11, 20, 392);
+    			attr_dev(h2, "class", "svelte-171oaqm");
+    			add_location(h2, file, 12, 20, 435);
+    			attr_dev(div, "class", "wallet svelte-171oaqm");
+    			add_location(div, file, 9, 16, 288);
+    			attr_dev(a, "href", a_href_value = "/" + /*wallet*/ ctx[1].id);
+    			attr_dev(a, "class", "svelte-171oaqm");
+    			add_location(a, file, 8, 12, 239);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, a, anchor);
@@ -1776,7 +1814,7 @@ var app = (function () {
     			if (dirty & /*$wallet*/ 1 && t1_value !== (t1_value = /*wallet*/ ctx[1].name + "")) set_data_dev(t1, t1_value);
     			if (dirty & /*$wallet*/ 1 && t4_value !== (t4_value = /*wallet*/ ctx[1].balance + "")) set_data_dev(t4, t4_value);
 
-    			if (dirty & /*$wallet*/ 1 && a_href_value !== (a_href_value = "/" + /*wallet*/ ctx[1].name.toLowerCase())) {
+    			if (dirty & /*$wallet*/ 1 && a_href_value !== (a_href_value = "/" + /*wallet*/ ctx[1].id)) {
     				attr_dev(a, "href", a_href_value);
     			}
     		},
@@ -1805,9 +1843,11 @@ var app = (function () {
     	let button;
     	let div;
     	let t2;
+    	let mounted;
+    	let dispose;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*$wallet*/ ctx[0].length) return create_if_block$1;
+    		if (/*$wallet*/ ctx[0] && /*$wallet*/ ctx[0].length) return create_if_block$1;
     		return create_else_block$1;
     	}
 
@@ -1824,14 +1864,14 @@ var app = (function () {
     			div = element("div");
     			div.textContent = "Add Wallet";
     			t2 = text("\n            +");
-    			attr_dev(div, "class", "svelte-cmg8ws");
-    			add_location(div, file, 22, 12, 683);
-    			attr_dev(button, "class", "add-wallet svelte-cmg8ws");
-    			add_location(button, file, 21, 8, 643);
-    			attr_dev(a, "href", "/#/create");
-    			attr_dev(a, "class", "svelte-cmg8ws");
-    			add_location(a, file, 20, 4, 614);
-    			attr_dev(section, "class", "svelte-cmg8ws");
+    			attr_dev(div, "class", "svelte-171oaqm");
+    			add_location(div, file, 22, 12, 685);
+    			attr_dev(button, "class", "add-wallet svelte-171oaqm");
+    			add_location(button, file, 21, 8, 645);
+    			attr_dev(a, "href", "/create");
+    			attr_dev(a, "class", "svelte-171oaqm");
+    			add_location(a, file, 20, 4, 609);
+    			attr_dev(section, "class", "svelte-171oaqm");
     			add_location(section, file, 4, 0, 117);
     		},
     		l: function claim(nodes) {
@@ -1845,6 +1885,11 @@ var app = (function () {
     			append_dev(a, button);
     			append_dev(button, div);
     			append_dev(button, t2);
+
+    			if (!mounted) {
+    				dispose = action_destroyer(link.call(null, a));
+    				mounted = true;
+    			}
     		},
     		p: function update(ctx, [dirty]) {
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
@@ -1864,6 +1909,8 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(section);
     			if_block.d();
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -1911,7 +1958,7 @@ var app = (function () {
     /* src/components/create-wallet.svelte generated by Svelte v3.32.3 */
     const file$1 = "src/components/create-wallet.svelte";
 
-    // (34:4) {#if errorMsg}
+    // (36:4) {#if errorMsg}
     function create_if_block$2(ctx) {
     	let div;
     	let t;
@@ -1921,7 +1968,7 @@ var app = (function () {
     			div = element("div");
     			t = text(/*errorMsg*/ ctx[0]);
     			attr_dev(div, "class", "error-msg svelte-pg2gvc");
-    			add_location(div, file$1, 34, 8, 959);
+    			add_location(div, file$1, 36, 8, 1061);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1939,7 +1986,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(34:4) {#if errorMsg}",
+    		source: "(36:4) {#if errorMsg}",
     		ctx
     	});
 
@@ -1990,32 +2037,32 @@ var app = (function () {
     			button = element("button");
     			img = element("img");
     			attr_dev(h40, "class", "svelte-pg2gvc");
-    			add_location(h40, file$1, 23, 12, 582);
+    			add_location(h40, file$1, 25, 12, 684);
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "placeholder", "Wallet Name");
     			attr_dev(input0, "class", "svelte-pg2gvc");
-    			add_location(input0, file$1, 24, 12, 608);
-    			add_location(label0, file$1, 22, 8, 562);
+    			add_location(input0, file$1, 26, 12, 710);
+    			add_location(label0, file$1, 24, 8, 664);
     			attr_dev(div0, "class", "form-row svelte-pg2gvc");
-    			add_location(div0, file$1, 21, 4, 531);
+    			add_location(div0, file$1, 23, 4, 633);
     			attr_dev(h41, "class", "svelte-pg2gvc");
-    			add_location(h41, file$1, 29, 12, 761);
+    			add_location(h41, file$1, 31, 12, 863);
     			attr_dev(input1, "type", "number");
     			attr_dev(input1, "step", "1");
     			attr_dev(input1, "placeholder", "Wallet Initial Balance");
     			attr_dev(input1, "class", "svelte-pg2gvc");
-    			add_location(input1, file$1, 30, 12, 802);
-    			add_location(label1, file$1, 28, 8, 741);
+    			add_location(input1, file$1, 32, 12, 904);
+    			add_location(label1, file$1, 30, 8, 843);
     			attr_dev(div1, "class", "form-row svelte-pg2gvc");
-    			add_location(div1, file$1, 27, 4, 710);
+    			add_location(div1, file$1, 29, 4, 812);
     			if (img.src !== (img_src_value = "assets/arrow-right.svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "Add");
     			attr_dev(img, "class", "svelte-pg2gvc");
-    			add_location(img, file$1, 37, 8, 1051);
+    			add_location(img, file$1, 39, 8, 1168);
     			attr_dev(button, "class", "svelte-pg2gvc");
-    			add_location(button, file$1, 36, 4, 1013);
+    			add_location(button, file$1, 38, 4, 1115);
     			attr_dev(form, "class", "svelte-pg2gvc");
-    			add_location(form, file$1, 20, 0, 520);
+    			add_location(form, file$1, 22, 0, 622);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2045,7 +2092,7 @@ var app = (function () {
     				dispose = [
     					listen_dev(input0, "input", /*input0_input_handler*/ ctx[4]),
     					listen_dev(input1, "input", /*input1_input_handler*/ ctx[5]),
-    					listen_dev(button, "click", /*addWallet*/ ctx[3], false, false, false)
+    					listen_dev(button, "click", prevent_default(/*addWallet*/ ctx[3]), false, true, false)
     				];
 
     				mounted = true;
@@ -2110,8 +2157,10 @@ var app = (function () {
     		$$invalidate(0, errorMsg = "");
 
     		wallet.addWallet({
-    			name: walletName,
-    			balance: walletInitialBalance
+    			id: "_" + Math.random().toString(36).substr(2, 9),
+    			name: walletName.trim(),
+    			balance: walletInitialBalance,
+    			transactions: {}
     		});
 
     		push("/");
@@ -2176,16 +2225,957 @@ var app = (function () {
     	}
     }
 
+    /* src/components/wallet-details.svelte generated by Svelte v3.32.3 */
+
+    const { Object: Object_1$1 } = globals;
+    const file$2 = "src/components/wallet-details.svelte";
+
+    function get_each_context$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[6] = list[i];
+    	return child_ctx;
+    }
+
+    function get_each_context_1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[9] = list[i];
+    	return child_ctx;
+    }
+
+    // (16:4) {#if durations && durations.length}
+    function create_if_block_1(ctx) {
+    	let div;
+    	let select;
+    	let mounted;
+    	let dispose;
+    	let each_value_1 = /*durations*/ ctx[2];
+    	validate_each_argument(each_value_1);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			select = element("select");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			if (/*selectedDuration*/ ctx[0] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[4].call(select));
+    			add_location(select, file$2, 17, 8, 627);
+    			attr_dev(div, "class", "date-picker svelte-1ixaehn");
+    			add_location(div, file$2, 16, 4, 593);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, select);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(select, null);
+    			}
+
+    			select_option(select, /*selectedDuration*/ ctx[0]);
+
+    			if (!mounted) {
+    				dispose = listen_dev(select, "change", /*select_change_handler*/ ctx[4]);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*durations*/ 4) {
+    				each_value_1 = /*durations*/ ctx[2];
+    				validate_each_argument(each_value_1);
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(select, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_1.length;
+    			}
+
+    			if (dirty & /*selectedDuration, durations*/ 5) {
+    				select_option(select, /*selectedDuration*/ ctx[0]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1.name,
+    		type: "if",
+    		source: "(16:4) {#if durations && durations.length}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (19:12) {#each durations as duration}
+    function create_each_block_1(ctx) {
+    	let option;
+    	let t_value = /*duration*/ ctx[9] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = /*duration*/ ctx[9];
+    			option.value = option.__value;
+    			add_location(option, file$2, 19, 12, 720);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1.name,
+    		type: "each",
+    		source: "(19:12) {#each durations as duration}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (37:8) {:else}
+    function create_else_block$2(ctx) {
+    	let p;
+
+    	const block = {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "No Transactions";
+    			attr_dev(p, "class", "placeholder svelte-1ixaehn");
+    			add_location(p, file$2, 37, 12, 1464);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, p, anchor);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(p);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$2.name,
+    		type: "else",
+    		source: "(37:8) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (27:8) {#if selectedWallet.transactions && selectedWallet.transactions[selectedDuration]}
+    function create_if_block$3(ctx) {
+    	let each_1_anchor;
+    	let each_value = /*selectedWallet*/ ctx[1].transactions[/*selectedDuration*/ ctx[0]];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert_dev(target, each_1_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*selectedWallet, selectedDuration*/ 3) {
+    				each_value = /*selectedWallet*/ ctx[1].transactions[/*selectedDuration*/ ctx[0]];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$1(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach_dev(each_1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$3.name,
+    		type: "if",
+    		source: "(27:8) {#if selectedWallet.transactions && selectedWallet.transactions[selectedDuration]}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (28:12) {#each selectedWallet.transactions[selectedDuration] as transaction}
+    function create_each_block$1(ctx) {
+    	let div1;
+    	let div0;
+    	let h4;
+    	let t0_value = /*transaction*/ ctx[6].name + "";
+    	let t0;
+    	let t1;
+    	let h5;
+    	let t2_value = /*transaction*/ ctx[6].desc + "";
+    	let t2;
+    	let t3;
+    	let h2;
+    	let t4;
+    	let t5_value = /*transaction*/ ctx[6].amount + "";
+    	let t5;
+    	let h2_class_value;
+    	let t6;
+
+    	const block = {
+    		c: function create() {
+    			div1 = element("div");
+    			div0 = element("div");
+    			h4 = element("h4");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			h5 = element("h5");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			h2 = element("h2");
+    			t4 = text("₹");
+    			t5 = text(t5_value);
+    			t6 = space();
+    			add_location(h4, file$2, 30, 24, 1181);
+    			attr_dev(h5, "class", "svelte-1ixaehn");
+    			add_location(h5, file$2, 31, 24, 1233);
+    			attr_dev(div0, "class", "transaction-info svelte-1ixaehn");
+    			add_location(div0, file$2, 29, 20, 1126);
+
+    			attr_dev(h2, "class", h2_class_value = "" + (null_to_empty(/*transaction*/ ctx[6].type === "debit"
+    			? "red"
+    			: "green") + " svelte-1ixaehn"));
+
+    			add_location(h2, file$2, 33, 20, 1308);
+    			attr_dev(div1, "class", "transaction svelte-1ixaehn");
+    			add_location(div1, file$2, 28, 16, 1080);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, div0);
+    			append_dev(div0, h4);
+    			append_dev(h4, t0);
+    			append_dev(div0, t1);
+    			append_dev(div0, h5);
+    			append_dev(h5, t2);
+    			append_dev(div1, t3);
+    			append_dev(div1, h2);
+    			append_dev(h2, t4);
+    			append_dev(h2, t5);
+    			append_dev(div1, t6);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*selectedDuration*/ 1 && t0_value !== (t0_value = /*transaction*/ ctx[6].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*selectedDuration*/ 1 && t2_value !== (t2_value = /*transaction*/ ctx[6].desc + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*selectedDuration*/ 1 && t5_value !== (t5_value = /*transaction*/ ctx[6].amount + "")) set_data_dev(t5, t5_value);
+
+    			if (dirty & /*selectedDuration, durations*/ 5 && h2_class_value !== (h2_class_value = "" + (null_to_empty(/*transaction*/ ctx[6].type === "debit"
+    			? "red"
+    			: "green") + " svelte-1ixaehn"))) {
+    				attr_dev(h2, "class", h2_class_value);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div1);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$1.name,
+    		type: "each",
+    		source: "(28:12) {#each selectedWallet.transactions[selectedDuration] as transaction}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$3(ctx) {
+    	let section;
+    	let div0;
+    	let img;
+    	let img_src_value;
+    	let t0;
+    	let h30;
+    	let t2;
+    	let h2;
+    	let t5;
+    	let t6;
+    	let div1;
+    	let h31;
+    	let t8;
+    	let t9;
+    	let a;
+    	let button;
+    	let div2;
+    	let t11;
+    	let mounted;
+    	let dispose;
+    	let if_block0 = /*durations*/ ctx[2] && /*durations*/ ctx[2].length && create_if_block_1(ctx);
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*selectedWallet*/ ctx[1].transactions && /*selectedWallet*/ ctx[1].transactions[/*selectedDuration*/ ctx[0]]) return create_if_block$3;
+    		return create_else_block$2;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block1 = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			section = element("section");
+    			div0 = element("div");
+    			img = element("img");
+    			t0 = space();
+    			h30 = element("h3");
+    			h30.textContent = `${/*selectedWallet*/ ctx[1].name}`;
+    			t2 = space();
+    			h2 = element("h2");
+    			h2.textContent = `₹${/*selectedWallet*/ ctx[1].balance}`;
+    			t5 = space();
+    			if (if_block0) if_block0.c();
+    			t6 = space();
+    			div1 = element("div");
+    			h31 = element("h3");
+    			h31.textContent = "TRANSACTIONS";
+    			t8 = space();
+    			if_block1.c();
+    			t9 = space();
+    			a = element("a");
+    			button = element("button");
+    			div2 = element("div");
+    			div2.textContent = "Add Transaction";
+    			t11 = text("\n            +");
+    			if (img.src !== (img_src_value = "assets/wallet.svg")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "wallet");
+    			attr_dev(img, "class", "svelte-1ixaehn");
+    			add_location(img, file$2, 11, 8, 413);
+    			attr_dev(h30, "class", "svelte-1ixaehn");
+    			add_location(h30, file$2, 12, 8, 464);
+    			attr_dev(h2, "class", "svelte-1ixaehn");
+    			add_location(h2, file$2, 13, 8, 503);
+    			attr_dev(div0, "class", "wallet-header svelte-1ixaehn");
+    			add_location(div0, file$2, 10, 4, 377);
+    			attr_dev(h31, "class", "svelte-1ixaehn");
+    			add_location(h31, file$2, 25, 8, 870);
+    			attr_dev(div1, "class", "wallet-transactions svelte-1ixaehn");
+    			add_location(div1, file$2, 24, 4, 828);
+    			attr_dev(div2, "class", "svelte-1ixaehn");
+    			add_location(div2, file$2, 42, 12, 1634);
+    			attr_dev(button, "class", "add-transaction svelte-1ixaehn");
+    			add_location(button, file$2, 41, 8, 1589);
+    			attr_dev(a, "href", "/" + /*selectedWallet*/ ctx[1].id + "/add");
+    			attr_dev(a, "class", "svelte-1ixaehn");
+    			add_location(a, file$2, 40, 4, 1536);
+    			attr_dev(section, "class", "svelte-1ixaehn");
+    			add_location(section, file$2, 9, 0, 363);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, section, anchor);
+    			append_dev(section, div0);
+    			append_dev(div0, img);
+    			append_dev(div0, t0);
+    			append_dev(div0, h30);
+    			append_dev(div0, t2);
+    			append_dev(div0, h2);
+    			append_dev(section, t5);
+    			if (if_block0) if_block0.m(section, null);
+    			append_dev(section, t6);
+    			append_dev(section, div1);
+    			append_dev(div1, h31);
+    			append_dev(div1, t8);
+    			if_block1.m(div1, null);
+    			append_dev(section, t9);
+    			append_dev(section, a);
+    			append_dev(a, button);
+    			append_dev(button, div2);
+    			append_dev(button, t11);
+
+    			if (!mounted) {
+    				dispose = action_destroyer(link.call(null, a));
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (/*durations*/ ctx[2] && /*durations*/ ctx[2].length) if_block0.p(ctx, dirty);
+
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block1) {
+    				if_block1.p(ctx, dirty);
+    			} else {
+    				if_block1.d(1);
+    				if_block1 = current_block_type(ctx);
+
+    				if (if_block1) {
+    					if_block1.c();
+    					if_block1.m(div1, null);
+    				}
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(section);
+    			if (if_block0) if_block0.d();
+    			if_block1.d();
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$3.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$3($$self, $$props, $$invalidate) {
+    	let $wallet;
+    	validate_store(wallet, "wallet");
+    	component_subscribe($$self, wallet, $$value => $$invalidate(5, $wallet = $$value));
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Wallet_details", slots, []);
+    	let { params = {} } = $$props;
+    	let selectedWallet = $wallet.find(wallet => wallet.id === params.id);
+    	let durations = selectedWallet.transactions && Object.keys(selectedWallet.transactions) || [];
+    	let selectedDuration = durations.length && durations[0] || "";
+    	const writable_props = ["params"];
+
+    	Object_1$1.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Wallet_details> was created with unknown prop '${key}'`);
+    	});
+
+    	function select_change_handler() {
+    		selectedDuration = select_value(this);
+    		$$invalidate(0, selectedDuration);
+    		$$invalidate(2, durations);
+    	}
+
+    	$$self.$$set = $$props => {
+    		if ("params" in $$props) $$invalidate(3, params = $$props.params);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		wallet,
+    		link,
+    		params,
+    		selectedWallet,
+    		durations,
+    		selectedDuration,
+    		$wallet
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("params" in $$props) $$invalidate(3, params = $$props.params);
+    		if ("selectedWallet" in $$props) $$invalidate(1, selectedWallet = $$props.selectedWallet);
+    		if ("durations" in $$props) $$invalidate(2, durations = $$props.durations);
+    		if ("selectedDuration" in $$props) $$invalidate(0, selectedDuration = $$props.selectedDuration);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [selectedDuration, selectedWallet, durations, params, select_change_handler];
+    }
+
+    class Wallet_details extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { params: 3 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Wallet_details",
+    			options,
+    			id: create_fragment$3.name
+    		});
+    	}
+
+    	get params() {
+    		throw new Error("<Wallet_details>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set params(value) {
+    		throw new Error("<Wallet_details>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src/components/create-transaction.svelte generated by Svelte v3.32.3 */
+    const file$3 = "src/components/create-transaction.svelte";
+
+    // (57:8) {#if errorMsg}
+    function create_if_block$4(ctx) {
+    	let div;
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			t = text(/*errorMsg*/ ctx[0]);
+    			attr_dev(div, "class", "error-msg svelte-pg2gvc");
+    			add_location(div, file$3, 57, 12, 2046);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*errorMsg*/ 1) set_data_dev(t, /*errorMsg*/ ctx[0]);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$4.name,
+    		type: "if",
+    		source: "(57:8) {#if errorMsg}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$4(ctx) {
+    	let form;
+    	let div0;
+    	let label0;
+    	let h40;
+    	let t1;
+    	let input0;
+    	let t2;
+    	let div1;
+    	let label1;
+    	let h41;
+    	let t4;
+    	let input1;
+    	let t5;
+    	let div2;
+    	let label2;
+    	let h42;
+    	let t7;
+    	let input2;
+    	let t8;
+    	let div3;
+    	let label3;
+    	let h43;
+    	let t10;
+    	let select;
+    	let option0;
+    	let option1;
+    	let t13;
+    	let t14;
+    	let button;
+    	let img;
+    	let img_src_value;
+    	let mounted;
+    	let dispose;
+    	let if_block = /*errorMsg*/ ctx[0] && create_if_block$4(ctx);
+
+    	const block = {
+    		c: function create() {
+    			form = element("form");
+    			div0 = element("div");
+    			label0 = element("label");
+    			h40 = element("h4");
+    			h40.textContent = "Name";
+    			t1 = space();
+    			input0 = element("input");
+    			t2 = space();
+    			div1 = element("div");
+    			label1 = element("label");
+    			h41 = element("h4");
+    			h41.textContent = "Description";
+    			t4 = space();
+    			input1 = element("input");
+    			t5 = space();
+    			div2 = element("div");
+    			label2 = element("label");
+    			h42 = element("h4");
+    			h42.textContent = "Transaction Amount (₹)";
+    			t7 = space();
+    			input2 = element("input");
+    			t8 = space();
+    			div3 = element("div");
+    			label3 = element("label");
+    			h43 = element("h4");
+    			h43.textContent = "Transaction Type";
+    			t10 = space();
+    			select = element("select");
+    			option0 = element("option");
+    			option0.textContent = "Debit (-)";
+    			option1 = element("option");
+    			option1.textContent = "Credit (+)";
+    			t13 = space();
+    			if (if_block) if_block.c();
+    			t14 = space();
+    			button = element("button");
+    			img = element("img");
+    			attr_dev(h40, "class", "svelte-pg2gvc");
+    			add_location(h40, file$3, 31, 16, 1054);
+    			attr_dev(input0, "type", "text");
+    			attr_dev(input0, "placeholder", "Transaction Name");
+    			attr_dev(input0, "class", "svelte-pg2gvc");
+    			add_location(input0, file$3, 32, 16, 1084);
+    			add_location(label0, file$3, 30, 12, 1030);
+    			attr_dev(div0, "class", "form-row svelte-pg2gvc");
+    			add_location(div0, file$3, 29, 8, 995);
+    			attr_dev(h41, "class", "svelte-pg2gvc");
+    			add_location(h41, file$3, 37, 16, 1267);
+    			attr_dev(input1, "type", "text");
+    			attr_dev(input1, "placeholder", "Transaction Description");
+    			attr_dev(input1, "class", "svelte-pg2gvc");
+    			add_location(input1, file$3, 38, 16, 1304);
+    			add_location(label1, file$3, 36, 12, 1243);
+    			attr_dev(div1, "class", "form-row svelte-pg2gvc");
+    			add_location(div1, file$3, 35, 8, 1208);
+    			attr_dev(h42, "class", "svelte-pg2gvc");
+    			add_location(h42, file$3, 43, 16, 1494);
+    			attr_dev(input2, "type", "number");
+    			attr_dev(input2, "step", "1");
+    			attr_dev(input2, "placeholder", "Wallet Initial Balance");
+    			attr_dev(input2, "class", "svelte-pg2gvc");
+    			add_location(input2, file$3, 44, 16, 1542);
+    			add_location(label2, file$3, 42, 12, 1470);
+    			attr_dev(div2, "class", "form-row svelte-pg2gvc");
+    			add_location(div2, file$3, 41, 8, 1435);
+    			attr_dev(h43, "class", "svelte-pg2gvc");
+    			add_location(h43, file$3, 49, 16, 1745);
+    			option0.__value = "debit";
+    			option0.value = option0.__value;
+    			add_location(option0, file$3, 51, 20, 1845);
+    			option1.__value = "credit";
+    			option1.value = option1.__value;
+    			add_location(option1, file$3, 52, 20, 1906);
+    			if (/*transactionType*/ ctx[4] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[10].call(select));
+    			add_location(select, file$3, 50, 16, 1787);
+    			add_location(label3, file$3, 48, 12, 1721);
+    			attr_dev(div3, "class", "form-row svelte-pg2gvc");
+    			add_location(div3, file$3, 47, 8, 1686);
+    			if (img.src !== (img_src_value = "assets/arrow-right.svg")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "Add");
+    			attr_dev(img, "class", "svelte-pg2gvc");
+    			add_location(img, file$3, 60, 12, 2170);
+    			attr_dev(button, "class", "svelte-pg2gvc");
+    			add_location(button, file$3, 59, 8, 2108);
+    			attr_dev(form, "class", "svelte-pg2gvc");
+    			add_location(form, file$3, 28, 4, 980);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, form, anchor);
+    			append_dev(form, div0);
+    			append_dev(div0, label0);
+    			append_dev(label0, h40);
+    			append_dev(label0, t1);
+    			append_dev(label0, input0);
+    			set_input_value(input0, /*transactionName*/ ctx[1]);
+    			append_dev(form, t2);
+    			append_dev(form, div1);
+    			append_dev(div1, label1);
+    			append_dev(label1, h41);
+    			append_dev(label1, t4);
+    			append_dev(label1, input1);
+    			set_input_value(input1, /*transactionDesc*/ ctx[2]);
+    			append_dev(form, t5);
+    			append_dev(form, div2);
+    			append_dev(div2, label2);
+    			append_dev(label2, h42);
+    			append_dev(label2, t7);
+    			append_dev(label2, input2);
+    			set_input_value(input2, /*transactionBalance*/ ctx[3]);
+    			append_dev(form, t8);
+    			append_dev(form, div3);
+    			append_dev(div3, label3);
+    			append_dev(label3, h43);
+    			append_dev(label3, t10);
+    			append_dev(label3, select);
+    			append_dev(select, option0);
+    			append_dev(select, option1);
+    			select_option(select, /*transactionType*/ ctx[4]);
+    			append_dev(form, t13);
+    			if (if_block) if_block.m(form, null);
+    			append_dev(form, t14);
+    			append_dev(form, button);
+    			append_dev(button, img);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[7]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[8]),
+    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[9]),
+    					listen_dev(select, "change", /*select_change_handler*/ ctx[10]),
+    					listen_dev(button, "click", prevent_default(/*addTransaction*/ ctx[5]), false, true, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*transactionName*/ 2 && input0.value !== /*transactionName*/ ctx[1]) {
+    				set_input_value(input0, /*transactionName*/ ctx[1]);
+    			}
+
+    			if (dirty & /*transactionDesc*/ 4 && input1.value !== /*transactionDesc*/ ctx[2]) {
+    				set_input_value(input1, /*transactionDesc*/ ctx[2]);
+    			}
+
+    			if (dirty & /*transactionBalance*/ 8 && to_number(input2.value) !== /*transactionBalance*/ ctx[3]) {
+    				set_input_value(input2, /*transactionBalance*/ ctx[3]);
+    			}
+
+    			if (dirty & /*transactionType*/ 16) {
+    				select_option(select, /*transactionType*/ ctx[4]);
+    			}
+
+    			if (/*errorMsg*/ ctx[0]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$4(ctx);
+    					if_block.c();
+    					if_block.m(form, t14);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(form);
+    			if (if_block) if_block.d();
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$4.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$4($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Create_transaction", slots, []);
+    	let { params = {} } = $$props;
+    	let errorMsg = "";
+    	let transactionName = "";
+    	let transactionDesc = "";
+    	let transactionBalance = 0;
+    	let transactionType = "debit";
+
+    	function addTransaction() {
+    		if (!transactionName || !transactionDesc || transactionBalance == null) {
+    			$$invalidate(0, errorMsg = "Fill all the required details");
+    			return;
+    		}
+
+    		$$invalidate(0, errorMsg = "");
+
+    		wallet.addTransaction(
+    			{
+    				id: "_" + Math.random().toString(36).substr(2, 9),
+    				name: transactionName.trim(),
+    				desc: transactionDesc.trim(),
+    				amount: transactionBalance,
+    				type: transactionType,
+    				duration: new Date().toDurationFormat()
+    			},
+    			params.id
+    		);
+
+    		push(`/${params.id}`);
+    	}
+
+    	const writable_props = ["params"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Create_transaction> was created with unknown prop '${key}'`);
+    	});
+
+    	function input0_input_handler() {
+    		transactionName = this.value;
+    		$$invalidate(1, transactionName);
+    	}
+
+    	function input1_input_handler() {
+    		transactionDesc = this.value;
+    		$$invalidate(2, transactionDesc);
+    	}
+
+    	function input2_input_handler() {
+    		transactionBalance = to_number(this.value);
+    		$$invalidate(3, transactionBalance);
+    	}
+
+    	function select_change_handler() {
+    		transactionType = select_value(this);
+    		$$invalidate(4, transactionType);
+    	}
+
+    	$$self.$$set = $$props => {
+    		if ("params" in $$props) $$invalidate(6, params = $$props.params);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		wallet,
+    		push,
+    		params,
+    		errorMsg,
+    		transactionName,
+    		transactionDesc,
+    		transactionBalance,
+    		transactionType,
+    		addTransaction
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("params" in $$props) $$invalidate(6, params = $$props.params);
+    		if ("errorMsg" in $$props) $$invalidate(0, errorMsg = $$props.errorMsg);
+    		if ("transactionName" in $$props) $$invalidate(1, transactionName = $$props.transactionName);
+    		if ("transactionDesc" in $$props) $$invalidate(2, transactionDesc = $$props.transactionDesc);
+    		if ("transactionBalance" in $$props) $$invalidate(3, transactionBalance = $$props.transactionBalance);
+    		if ("transactionType" in $$props) $$invalidate(4, transactionType = $$props.transactionType);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [
+    		errorMsg,
+    		transactionName,
+    		transactionDesc,
+    		transactionBalance,
+    		transactionType,
+    		addTransaction,
+    		params,
+    		input0_input_handler,
+    		input1_input_handler,
+    		input2_input_handler,
+    		select_change_handler
+    	];
+    }
+
+    class Create_transaction extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, { params: 6 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Create_transaction",
+    			options,
+    			id: create_fragment$4.name
+    		});
+    	}
+
+    	get params() {
+    		throw new Error("<Create_transaction>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set params(value) {
+    		throw new Error("<Create_transaction>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
     const routes = {
         '/': Wallets,
         '/create': Create_wallet,
+        '/:id': Wallet_details,
+        '/:id/add': Create_transaction,
         '*': Wallets
     };
 
     /* src/App.svelte generated by Svelte v3.32.3 */
-    const file$2 = "src/App.svelte";
+    const file$4 = "src/App.svelte";
 
-    function create_fragment$3(ctx) {
+    function create_fragment$5(ctx) {
     	let main;
     	let h1;
     	let t1;
@@ -2206,11 +3196,11 @@ var app = (function () {
     			t3 = space();
     			create_component(router.$$.fragment);
     			attr_dev(h1, "class", "svelte-1gfhiiv");
-    			add_location(h1, file$2, 6, 1, 103);
+    			add_location(h1, file$4, 6, 1, 103);
     			attr_dev(p, "class", "svelte-1gfhiiv");
-    			add_location(p, file$2, 7, 1, 123);
+    			add_location(p, file$4, 7, 1, 123);
     			attr_dev(main, "class", "svelte-1gfhiiv");
-    			add_location(main, file$2, 5, 0, 95);
+    			add_location(main, file$4, 5, 0, 95);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2242,7 +3232,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$3.name,
+    		id: create_fragment$5.name,
     		type: "component",
     		source: "",
     		ctx
@@ -2251,7 +3241,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$3($$self, $$props, $$invalidate) {
+    function instance$5($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
     	const writable_props = [];
@@ -2267,16 +3257,30 @@ var app = (function () {
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "App",
     			options,
-    			id: create_fragment$3.name
+    			id: create_fragment$5.name
     		});
     	}
     }
+
+    Date.prototype.toDurationFormat = function() {
+
+        let monthNames =["Jan","Feb","Mar","Apr",
+                          "May","Jun","Jul","Aug",
+                          "Sep", "Oct","Nov","Dec"];
+        
+        let monthIndex = this.getMonth();
+        let monthName = monthNames[monthIndex];
+
+        let year = this.getFullYear();
+        
+        return `${monthName}-${year}`;  
+    };
 
     const app = new App({
     	target: document.body

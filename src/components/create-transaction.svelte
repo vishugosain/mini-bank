@@ -1,0 +1,117 @@
+<script>
+    import { wallet } from "../store/wallet.store";
+    import {push} from 'svelte-spa-router';
+
+    export let params = {};
+    
+        let errorMsg = '';
+        let transactionName = '';
+        let transactionDesc = '';
+        let transactionBalance = 0;
+        let transactionType = 'debit';
+        function addTransaction() {
+            if (!transactionName || !transactionDesc || transactionBalance == null) {
+                errorMsg = 'Fill all the required details';
+                return;
+            }
+            errorMsg = '';
+            wallet.addTransaction({
+                id: '_' + Math.random().toString(36).substr(2, 9),
+                name: transactionName.trim(),
+                desc: transactionDesc.trim(),
+                amount: transactionBalance,
+                type: transactionType,
+                duration: new Date().toDurationFormat()
+            }, params.id);
+            push(`/${params.id}`);
+        }
+    </script>
+    <form>
+        <div class="form-row">
+            <label>
+                <h4>Name</h4>
+                <input bind:value={transactionName} type="text" placeholder="Transaction Name">
+            </label>
+        </div>
+        <div class="form-row">
+            <label>
+                <h4>Description</h4>
+                <input bind:value={transactionDesc} type="text" placeholder="Transaction Description">
+            </label>
+        </div>
+        <div class="form-row">
+            <label>
+                <h4>Transaction Amount (₹)</h4>
+                <input bind:value={transactionBalance} type="number" step="1" placeholder="Wallet Initial Balance">
+            </label>
+        </div>
+        <div class="form-row">
+            <label>
+                <h4>Transaction Type</h4>
+                <select bind:value={transactionType}>
+                    <option value="debit">Debit (-)</option>
+                    <option value="credit">Credit (+)</option>
+                </select>
+            </label>
+        </div>
+        {#if errorMsg}
+            <div class="error-msg">{errorMsg}</div>
+        {/if}
+        <button on:click|preventDefault={addTransaction}>
+            <img src="assets/arrow-right.svg" alt="Add">
+        </button>
+    </form>
+    
+    <style type="text/scss">
+        @import '../styles/_main.scss';
+        form {
+            min-width: 50%;
+            padding: 80px 40px;
+            .form-row {
+                margin: 8px 0;
+                label {
+                    h4 {
+                        color: $dark-blue;
+                        text-transform: uppercase;
+                        margin-bottom: 8px;
+                    }
+                }
+                input {
+                    width: 100%;
+                    padding: 12px;
+                    outline: none;
+                    border-radius: 6px;
+                    font-family: 'Poppins', sans-serif;
+                    &::placeholder {
+                        color: $gray;
+                    }
+                }
+            }
+            .error-msg {
+                margin: 8px 0;
+                color: $red;
+            }
+            button {
+                background: $dark-blue;
+                border: none;
+                outline: none;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+                cursor: pointer;
+                margin: 32px auto;
+                transition: all 0.25s ease-out;
+                img {
+                    width: 48px;
+                    height: 48px;
+                    color: white;
+                    object-fit: contain;
+                }
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+        }
+    </style>

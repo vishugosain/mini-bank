@@ -3,10 +3,10 @@
     import {link} from 'svelte-spa-router'
 </script>
 <section>
-    {#if $wallet.length}
+    {#if $wallet && $wallet.length}
     <div class="wallet-wrap">
         {#each $wallet as wallet}
-            <a href="/{wallet.name.toLowerCase()}" use:link>
+            <a href="/{wallet.id}" use:link>
                 <div class="wallet">
                     <img src="assets/wallet.svg" alt="wallet">
                     <h3>{wallet.name}</h3>
@@ -18,7 +18,7 @@
     {:else}
         <h3 class="placeholder">No Wallets here.</h3>
     {/if}
-    <a href="/#/create">
+    <a href="/create" use:link>
         <button class="add-wallet">
             <div>Add Wallet</div>
             +
@@ -29,10 +29,10 @@
     @import '../styles/_main.scss';
     section {
         padding: 16px;
-        min-width: 50%;
+        min-width: 400px;
         .wallet-wrap {
             display: flex;
-            margin-bottom: 16px;
+            margin: 32px 0;
             a {
                 width: 100%;
             }
@@ -56,6 +56,7 @@
                     color: black;
                     font-weight: 400;
                     margin-left: 8px;
+                    font-size: 24px;
                 }
             }
         }

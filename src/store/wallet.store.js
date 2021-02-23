@@ -9,6 +9,21 @@ function createWallet() {
         addWallet: (wallet) => update(wallets => {
             wallets = [...wallets, wallet];
             localStorage.setItem(LOCAL_WALLET, JSON.stringify(wallets));
+            return wallets;
+        }),
+        addTransaction: (transaction, walletId) => update(wallets => {
+            wallets = wallets.map(wallet => {
+                if (wallet.id === walletId) {
+                    if (wallet.transactions[transaction.duration]) {
+                        wallet.transactions[transaction.duration] = [...wallet.transactions[transaction.duration], transaction];
+                    } else {
+                        wallet.transactions[transaction.duration] = [transaction];
+                    }
+                }
+                return wallet;
+            });
+            localStorage.setItem(LOCAL_WALLET, JSON.stringify(wallets));
+            return wallets;
         }),
         reset: () => set([])
     }

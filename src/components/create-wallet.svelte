@@ -1,6 +1,6 @@
 <script>
 import { wallet } from "../store/wallet.store";
-import {push} from 'svelte-spa-router'
+import {push} from 'svelte-spa-router';
 
     let errorMsg = '';
     let walletName = '';
@@ -12,8 +12,10 @@ import {push} from 'svelte-spa-router'
         }
         errorMsg = '';
         wallet.addWallet({
-            name: walletName,
-            balance: walletInitialBalance
+            id: '_' + Math.random().toString(36).substr(2, 9),
+            name: walletName.trim(),
+            balance: walletInitialBalance,
+            transactions: {},
         });
         push('/');
     }
@@ -34,7 +36,7 @@ import {push} from 'svelte-spa-router'
     {#if errorMsg}
         <div class="error-msg">{errorMsg}</div>
     {/if}
-    <button on:click={addWallet}>
+    <button on:click|preventDefault={addWallet}>
         <img src="assets/arrow-right.svg" alt="Add">
     </button>
 </form>
