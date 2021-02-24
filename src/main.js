@@ -1,10 +1,7 @@
 import App from './App.svelte';
+import {monthNames} from './app.constants';
 
 Date.prototype.toDurationFormat = function() {
-
-    let monthNames =["Jan","Feb","Mar","Apr",
-                      "May","Jun","Jul","Aug",
-                      "Sep", "Oct","Nov","Dec"];
     
     let monthIndex = this.getMonth();
     let monthName = monthNames[monthIndex];

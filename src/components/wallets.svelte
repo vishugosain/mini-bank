@@ -33,6 +33,7 @@
         .wallet-wrap {
             display: flex;
             margin: 32px 0;
+            flex-direction: column;
             a {
                 width: 100%;
             }
@@ -43,6 +44,7 @@
                 cursor: pointer;
                 border: 1px solid #ccc;
                 border-radius: 8px;
+                margin: 8px 0;
                 img {
                     width: 48px;
                     height: 48px;

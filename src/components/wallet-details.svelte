@@ -1,27 +1,48 @@
 <script>
-import { wallet } from "../store/wallet.store";
-import {link} from 'svelte-spa-router';
-export let params = {}
-let selectedWallet = $wallet.find(wallet => wallet.id === params.id);
-let durations = (selectedWallet.transactions && Object.keys(selectedWallet.transactions)) || [];
-let selectedDuration = (durations.length && durations[0]) || '';
+    import { wallet } from "../store/wallet.store";
+    import {link, push} from 'svelte-spa-router';
+    import { getYearList, monthNames } from "../app.constants";
+    export let params = {}
+    let selectedWallet = $wallet.find(wallet => wallet.id === params.id);
+    let selectedYear = new Date().getFullYear();
+    let selectedMonth = monthNames[new Date().getMonth()];
+    const yearList = getYearList();
+    let selectedDuration = `${selectedMonth}-${selectedYear}`;
+    function setDuration() {
+        selectedDuration = `${selectedMonth}-${selectedYear}`;
+    }
+    function deleteWallet() {
+        wallet.deleteWallet(selectedWallet.id);
+        push('/');
+    }
 </script>
 
 <section>
+    <div class="top-bar">
+        <a href="/" use:link>
+            <img src="assets/arrow-left.svg" alt="Back">
+        </a>
+        <button class="danger-btn" on:click={deleteWallet}>Delete</button>
+    </div>
     <div class="wallet-header">
         <img src="assets/wallet.svg" alt="wallet">
         <h3>{selectedWallet.name}</h3>
         <h2>₹{selectedWallet.balance}</h2>
     </div>
-    {#if durations && durations.length}
     <div class="date-picker">
-        <select bind:value={selectedDuration}>
-            {#each durations as duration}
-            <option value={duration}>{duration}</option>
+        <!-- svelte-ignore a11y-no-onchange -->
+        <select bind:value={selectedMonth} on:change={setDuration}>
+            {#each monthNames as month}
+            <option value={month}>{month}</option>
+            {/each}
+        </select>
+        <!-- svelte-ignore a11y-no-onchange -->
+        <select bind:value={selectedYear} on:change={setDuration}>
+            {#each yearList as year}
+            <option value={year}>{year}</option>
             {/each}
         </select>
     </div>
-    {/if}
     <div class="wallet-transactions">
         <h3>TRANSACTIONS</h3>
         {#if selectedWallet.transactions && selectedWallet.transactions[selectedDuration]}
@@ -53,6 +74,19 @@ let selectedDuration = (durations.length && durations[0]) || '';
         margin: 32px 0;
         min-width: 400px;
         padding: 16px;
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            a {
+                img {
+                    width: 32px;
+                    height: 32px;
+                    object-fit: contain;
+                }
+            }
+        }
         .wallet-header {
             display: flex;
             align-items: center;

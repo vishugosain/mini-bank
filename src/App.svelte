@@ -4,6 +4,7 @@
 </script>
 
 <main>
+	<img src="assets/bank.svg" alt="MiniBank">
 	<h1>Mini Bank</h1>
 	<p>Store all your transactions</p>
 	<Router {routes} />
@@ -18,6 +19,12 @@
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
+		img {
+			width: 80px;
+			height: 80px;
+			object-fit: contain;
+			margin-bottom: 16px;
+		}
 		h1 {
 			line-height: 1;
 			font-size: 48px;
