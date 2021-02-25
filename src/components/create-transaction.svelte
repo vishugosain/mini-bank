@@ -1,32 +1,37 @@
 <script>
     import { wallet } from "../store/wallet.store";
-    import {push} from 'svelte-spa-router';
+    import {push, link} from 'svelte-spa-router';
 
     export let params = {};
     
-        let errorMsg = '';
-        let transactionName = '';
-        let transactionDesc = '';
-        let transactionBalance = 0;
-        let transactionType = 'debit';
-        function addTransaction() {
-            if (!transactionName || !transactionDesc || transactionBalance == null) {
-                errorMsg = 'Fill all the required details';
-                return;
-            }
-            errorMsg = '';
-            wallet.addTransaction({
-                id: '_' + Math.random().toString(36).substr(2, 9),
-                name: transactionName.trim(),
-                desc: transactionDesc.trim(),
-                amount: transactionBalance,
-                type: transactionType,
-                duration: new Date().toDurationFormat()
-            }, params.id);
-            push(`/${params.id}`);
+    let errorMsg = '';
+    let transactionName = '';
+    let transactionDesc = '';
+    let transactionBalance = 0;
+    let transactionType = 'debit';
+    function addTransaction() {
+        if (!transactionName || !transactionDesc || transactionBalance == null) {
+            errorMsg = 'Fill all the required details';
+            return;
         }
+        errorMsg = '';
+        wallet.addTransaction({
+            id: '_' + Math.random().toString(36).substr(2, 9),
+            name: transactionName.trim(),
+            desc: transactionDesc.trim(),
+            amount: transactionBalance,
+            type: transactionType,
+            duration: new Date().toDurationFormat()
+        }, params.id);
+        push(`/${params.id}`);
+    }
     </script>
     <form>
+        <div class="top-bar">
+            <a href="/{params.id}" use:link>
+                <img src="assets/arrow-left.svg" alt="Back">
+            </a>
+        </div>
         <div class="form-row">
             <label>
                 <h4>Name</h4>
@@ -67,6 +72,19 @@
         form {
             min-width: 50%;
             padding: 80px 40px;
+            .top-bar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 24px;
+                a {
+                    img {
+                        width: 32px;
+                        height: 32px;
+                        object-fit: contain;
+                    }
+                }
+            }
             .form-row {
                 margin: 8px 0;
                 label {

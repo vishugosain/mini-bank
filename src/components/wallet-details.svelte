@@ -45,15 +45,17 @@
     </div>
     <div class="wallet-transactions">
         <h3>TRANSACTIONS</h3>
-        {#if selectedWallet.transactions && selectedWallet.transactions[selectedDuration]}
+        {#if selectedWallet.transactions && selectedWallet.transactions[selectedDuration] && selectedWallet.transactions[selectedDuration].length}
             {#each selectedWallet.transactions[selectedDuration] as transaction}
-                <div class="transaction">
-                    <div class="transaction-info">
-                        <h4>{transaction.name}</h4>
-                        <h5>{transaction.desc}</h5>
+                <a href="/{selectedWallet.id}/{selectedDuration}/{transaction.id}/edit" use:link>
+                    <div class="transaction">
+                        <div class="transaction-info">
+                            <h4>{transaction.name}</h4>
+                            <h5>{transaction.desc}</h5>
+                        </div>
+                        <h2 class={transaction.type === 'debit' ? 'red': 'green'}>₹{transaction.amount}</h2>
                     </div>
-                    <h2 class={transaction.type === 'debit' ? 'red': 'green'}>₹{transaction.amount}</h2>
-                </div>
+                </a>
             {/each}
         {:else}
             <p class="placeholder">No Transactions</p>
@@ -122,7 +124,7 @@
                 margin: 8px 0;
                 .transaction-info {
                     h4 {
-                        
+                        color: $dark-blue;
                     }
                     h5 {
                         color: $gray;

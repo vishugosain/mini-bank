@@ -1,8 +1,12 @@
 <script>
     import { wallet } from '../store/wallet.store.js';
-    import {link} from 'svelte-spa-router'
+    import {link} from 'svelte-spa-router';
 </script>
 <section>
+    <div class="total-balance">
+        <h3>Total Balance</h3>
+        <h2>₹{$wallet.reduce((sum, wallet) => sum + wallet.balance, 0)}</h2>
+    </div>
     {#if $wallet && $wallet.length}
     <div class="wallet-wrap">
         {#each $wallet as wallet}
@@ -30,9 +34,23 @@
     section {
         padding: 16px;
         min-width: 400px;
+        .total-balance {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border: 1px solid $dark-blue;
+            background: $dark-blue;
+            color: white;
+            border-radius: 8px;
+            margin: 8px 0;
+            h3 {
+                font-size: 24px;
+            }
+        }
         .wallet-wrap {
             display: flex;
-            margin: 32px 0;
+            margin: 16px 0;
             flex-direction: column;
             a {
                 width: 100%;

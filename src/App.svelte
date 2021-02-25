@@ -7,6 +7,7 @@
 	<img src="assets/bank.svg" alt="MiniBank">
 	<h1>Mini Bank</h1>
 	<p>Store all your transactions</p>
+	<p>(All of your transactions are stored locally in your browser.)</p>
 	<Router {routes} />
 </main>
 
