@@ -68,7 +68,10 @@ function createWallet() {
             saveToLocalStorage(wallets);
             return wallets;
         }),
-        reset: () => set([])
+        reset: () => {
+            set([]);
+            localStorage.removeItem(LOCAL_WALLET);
+        }
     }
 
 }
