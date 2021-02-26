@@ -15,16 +15,17 @@
 	@import './styles/_main.scss';
 	main {
 		width: 100vw;
-		height: 100vh;
+		min-height: 100vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
+		overflow: auto;
 		img {
 			width: 80px;
 			height: 80px;
 			object-fit: contain;
-			margin-bottom: 16px;
+			margin: 16px 0;
 		}
 		h1 {
 			line-height: 1;
@@ -33,6 +34,7 @@
 		}
 		p{
 			color: $gray;
+			text-align: center;
 		}
 	}
 </style>

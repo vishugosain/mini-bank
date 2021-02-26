@@ -1,6 +1,6 @@
 <script>
 import { wallet } from "../store/wallet.store";
-import {push} from 'svelte-spa-router';
+import {push, link} from 'svelte-spa-router';
 
     let errorMsg = '';
     let walletName = '';
@@ -21,6 +21,11 @@ import {push} from 'svelte-spa-router';
     }
 </script>
 <form>
+    <div class="top-bar">
+        <a href="/" use:link>
+            <img src="assets/arrow-left.svg" alt="Back">
+        </a>
+    </div>
     <div class="form-row">
         <label>
             <h4>Name</h4>
@@ -45,7 +50,20 @@ import {push} from 'svelte-spa-router';
     @import '../styles/_main.scss';
     form {
         min-width: 50%;
-        padding: 80px 40px;
+        padding: 32px 24px;
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            a {
+                img {
+                    width: 32px;
+                    height: 32px;
+                    object-fit: contain;
+                }
+            }
+        }
         .form-row {
             margin: 8px 0;
             label {
@@ -91,6 +109,11 @@ import {push} from 'svelte-spa-router';
             &:hover {
                 transform: scale(1.1);
             }
+        }
+    }
+    @media screen and (max-width: 425px) {
+        form {
+            min-width: 90%;
         }
     }
 </style>

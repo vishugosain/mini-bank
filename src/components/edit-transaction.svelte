@@ -154,4 +154,9 @@
             }
         }
     }
+    @media screen and (max-width: 425px) {
+        form {
+            min-width: 90%;
+        }
+    }
 </style>

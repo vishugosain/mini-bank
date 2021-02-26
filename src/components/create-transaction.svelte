@@ -71,7 +71,7 @@
         @import '../styles/_main.scss';
         form {
             min-width: 50%;
-            padding: 80px 40px;
+            padding: 32px 24px;
             .top-bar {
                 display: flex;
                 align-items: center;
@@ -130,6 +130,11 @@
                 &:hover {
                     transform: scale(1.1);
                 }
+            }
+        }
+        @media screen and (max-width: 425px) {
+            form {
+                min-width: 90%;
             }
         }
     </style>

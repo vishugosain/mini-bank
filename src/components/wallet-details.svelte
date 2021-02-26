@@ -76,6 +76,7 @@
         margin: 32px 0;
         min-width: 400px;
         padding: 16px;
+        box-sizing: border-box;
         .top-bar {
             display: flex;
             align-items: center;
@@ -178,6 +179,12 @@
                     padding-right: 8px;
                 }
             }
+        }
+    }
+
+    @media screen and (max-width: 425px) {
+        section {
+            min-width: 95%;
         }
     }
 </style>
