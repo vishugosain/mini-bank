@@ -1,13 +1,21 @@
 <script>
+	import { wallet } from './store/wallet.store.js';
 	import Router from 'svelte-spa-router';
 	import {routes} from './router';
+
+	function deleteAll() {
+		wallet.reset();
+	}
 </script>
 
 <main>
 	<img src="assets/bank.svg" alt="MiniBank">
 	<h1>Mini Bank</h1>
 	<p>Store all your transactions</p>
-	<p>(All of your transactions are stored locally in your browser.)</p>
+	<p>(All of the data are stored in your browser.)</p>
+	<div class="top-bar">
+        <button class="danger-btn" on:click={deleteAll}>Delete All</button>
+    </div>
 	<Router {routes} />
 </main>
 
@@ -21,6 +29,9 @@
 		justify-content: center;
 		flex-direction: column;
 		overflow: auto;
+		.top-bar {
+			padding-top: 16px;
+        }
 		img {
 			width: 80px;
 			height: 80px;

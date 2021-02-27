@@ -7,9 +7,6 @@
     }
 </script>
 <section>
-    <div class="top-bar">
-        <button class="danger-btn" on:click={deleteAll}>Delete All</button>
-    </div>
     <div class="total-balance">
         <h3>Total Balance</h3>
         <h2>₹{$wallet.reduce((sum, wallet) => sum + wallet.balance, 0)}</h2>
@@ -41,12 +38,6 @@
     section {
         padding: 16px;
         min-width: 400px;
-        .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            margin-bottom: 24px;
-        }
         .total-balance {
             display: flex;
             align-items: center;

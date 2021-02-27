@@ -515,98 +515,6 @@ var app = (function () {
         $inject_state() { }
     }
 
-    /**
-     * @typedef {Object} WrappedComponent Object returned by the `wrap` method
-     * @property {SvelteComponent} component - Component to load (this is always asynchronous)
-     * @property {RoutePrecondition[]} [conditions] - Route pre-conditions to validate
-     * @property {Object} [props] - Optional dictionary of static props
-     * @property {Object} [userData] - Optional user data dictionary
-     * @property {bool} _sveltesparouter - Internal flag; always set to true
-     */
-
-    /**
-     * @callback AsyncSvelteComponent
-     * @returns {Promise<SvelteComponent>} Returns a Promise that resolves with a Svelte component
-     */
-
-    /**
-     * @callback RoutePrecondition
-     * @param {RouteDetail} detail - Route detail object
-     * @returns {boolean|Promise<boolean>} If the callback returns a false-y value, it's interpreted as the precondition failed, so it aborts loading the component (and won't process other pre-condition callbacks)
-     */
-
-    /**
-     * @typedef {Object} WrapOptions Options object for the call to `wrap`
-     * @property {SvelteComponent} [component] - Svelte component to load (this is incompatible with `asyncComponent`)
-     * @property {AsyncSvelteComponent} [asyncComponent] - Function that returns a Promise that fulfills with a Svelte component (e.g. `{asyncComponent: () => import('Foo.svelte')}`)
-     * @property {SvelteComponent} [loadingComponent] - Svelte component to be displayed while the async route is loading (as a placeholder); when unset or false-y, no component is shown while component
-     * @property {object} [loadingParams] - Optional dictionary passed to the `loadingComponent` component as params (for an exported prop called `params`)
-     * @property {object} [userData] - Optional object that will be passed to events such as `routeLoading`, `routeLoaded`, `conditionsFailed`
-     * @property {object} [props] - Optional key-value dictionary of static props that will be passed to the component. The props are expanded with {...props}, so the key in the dictionary becomes the name of the prop.
-     * @property {RoutePrecondition[]|RoutePrecondition} [conditions] - Route pre-conditions to add, which will be executed in order
-     */
-
-    /**
-     * Wraps a component to enable multiple capabilities:
-     * 1. Using dynamically-imported component, with (e.g. `{asyncComponent: () => import('Foo.svelte')}`), which also allows bundlers to do code-splitting.
-     * 2. Adding route pre-conditions (e.g. `{conditions: [...]}`)
-     * 3. Adding static props that are passed to the component
-     * 4. Adding custom userData, which is passed to route events (e.g. route loaded events) or to route pre-conditions (e.g. `{userData: {foo: 'bar}}`)
-     * 
-     * @param {WrapOptions} args - Arguments object
-     * @returns {WrappedComponent} Wrapped component
-     */
-    function wrap(args) {
-        if (!args) {
-            throw Error('Parameter args is required')
-        }
-
-        // We need to have one and only one of component and asyncComponent
-        // This does a "XNOR"
-        if (!args.component == !args.asyncComponent) {
-            throw Error('One and only one of component and asyncComponent is required')
-        }
-
-        // If the component is not async, wrap it into a function returning a Promise
-        if (args.component) {
-            args.asyncComponent = () => Promise.resolve(args.component);
-        }
-
-        // Parameter asyncComponent and each item of conditions must be functions
-        if (typeof args.asyncComponent != 'function') {
-            throw Error('Parameter asyncComponent must be a function')
-        }
-        if (args.conditions) {
-            // Ensure it's an array
-            if (!Array.isArray(args.conditions)) {
-                args.conditions = [args.conditions];
-            }
-            for (let i = 0; i < args.conditions.length; i++) {
-                if (!args.conditions[i] || typeof args.conditions[i] != 'function') {
-                    throw Error('Invalid parameter conditions[' + i + ']')
-                }
-            }
-        }
-
-        // Check if we have a placeholder component
-        if (args.loadingComponent) {
-            args.asyncComponent.loading = args.loadingComponent;
-            args.asyncComponent.loadingParams = args.loadingParams || undefined;
-        }
-
-        // Returns an object that contains all the functions to execute too
-        // The _sveltesparouter flag is to confirm the object was created by this router
-        const obj = {
-            component: args.asyncComponent,
-            userData: args.userData,
-            conditions: (args.conditions && args.conditions.length) ? args.conditions : undefined,
-            props: (args.props && Object.keys(args.props).length) ? args.props : {},
-            _sveltesparouter: true
-        };
-
-        return obj
-    }
-
     const subscriber_queue = [];
     /**
      * Creates a `Readable` store that allows reading by subscription.
@@ -708,6 +616,191 @@ var app = (function () {
                 cleanup();
             };
         });
+    }
+
+    const LOCAL_WALLET = 'localWallet';
+    const monthNames = [
+        "Jan","Feb","Mar","Apr",
+        "May","Jun","Jul","Aug",
+        "Sep", "Oct","Nov","Dec"
+    ];
+    function getYearList() {
+        const year = new Date().getFullYear();
+        const years = [year];
+        for (let i = 1;i <= 10;i++) {
+            years.push(year + i);
+            years.unshift(year - i);
+        }
+        return years;
+    }
+
+    function saveToLocalStorage(wallets) {
+        localStorage.setItem(LOCAL_WALLET, JSON.stringify(wallets));
+    }
+
+    function createWallet() {
+        const {subscribe, set, update} = writable(JSON.parse(localStorage.getItem(LOCAL_WALLET)) || []);
+
+        return {
+            subscribe,
+            addWallet: (wallet) => update(wallets => {
+                wallets = [...wallets, wallet];
+                saveToLocalStorage(wallets);
+                return wallets;
+            }),
+            deleteWallet: (walletId) => update(wallets => {
+                const walletIndex = wallets.findIndex(wallet => wallet.id === walletId);
+                if (walletIndex > -1) {
+                    wallets.splice(walletIndex, 1);
+                }
+                saveToLocalStorage(wallets);
+                return wallets;
+            }),
+            addTransaction: (transaction, walletId) => update(wallets => {
+                wallets = wallets.map(wallet => {
+                    if (wallet.id === walletId) {
+                        if (wallet.transactions[transaction.duration]) {
+                            wallet.transactions[transaction.duration] = [...wallet.transactions[transaction.duration], transaction];
+                        } else {
+                            wallet.transactions[transaction.duration] = [transaction];
+                        }
+                        transaction.type === 'debit' ? wallet.balance -= transaction.amount : wallet.balance += transaction.amount;
+                    }
+                    return wallet;
+                });
+                saveToLocalStorage(wallets);
+                return wallets;
+            }),
+            editTransaction: (transaction, walletId) => update(wallets => {
+                wallets = wallets.map(wallet => {
+                    if (wallet.id === walletId) {
+                        const transactionIndex = wallet.transactions[transaction.duration].findIndex(t => t.id === transaction.id);
+                        if (transactionIndex > -1) {
+                            const oldTransaction = wallet.transactions[transaction.duration][transactionIndex];
+                            transaction.type === 'debit' ? wallet.balance += oldTransaction.amount : wallet.balance -= oldTransaction.amount;
+                            wallet.transactions[transaction.duration][transactionIndex] = transaction;
+                        }
+                        transaction.type === 'debit' ? wallet.balance -= transaction.amount : wallet.balance += transaction.amount;
+                    }
+                    return wallet;
+                });
+                saveToLocalStorage(wallets);
+                return wallets;
+            }),
+            deleteTransaction: (transaction, walletId) => update(wallets => {
+                wallets = wallets.map(wallet => {
+                    if (wallet.id === walletId) {
+                        const transactionIndex = wallet.transactions[transaction.duration].findIndex(t => t.id === transaction.id);
+                        if (transactionIndex > -1) {
+                            wallet.transactions[transaction.duration].splice(transactionIndex, 1);
+                        }
+                        transaction.type === 'debit' ? wallet.balance += transaction.amount : wallet.balance -= transaction.amount;
+                    }
+                    return wallet;
+                });
+                saveToLocalStorage(wallets);
+                return wallets;
+            }),
+            reset: () => {
+                set([]);
+                localStorage.removeItem(LOCAL_WALLET);
+            }
+        }
+
+    }
+
+    const wallet = createWallet();
+
+    /**
+     * @typedef {Object} WrappedComponent Object returned by the `wrap` method
+     * @property {SvelteComponent} component - Component to load (this is always asynchronous)
+     * @property {RoutePrecondition[]} [conditions] - Route pre-conditions to validate
+     * @property {Object} [props] - Optional dictionary of static props
+     * @property {Object} [userData] - Optional user data dictionary
+     * @property {bool} _sveltesparouter - Internal flag; always set to true
+     */
+
+    /**
+     * @callback AsyncSvelteComponent
+     * @returns {Promise<SvelteComponent>} Returns a Promise that resolves with a Svelte component
+     */
+
+    /**
+     * @callback RoutePrecondition
+     * @param {RouteDetail} detail - Route detail object
+     * @returns {boolean|Promise<boolean>} If the callback returns a false-y value, it's interpreted as the precondition failed, so it aborts loading the component (and won't process other pre-condition callbacks)
+     */
+
+    /**
+     * @typedef {Object} WrapOptions Options object for the call to `wrap`
+     * @property {SvelteComponent} [component] - Svelte component to load (this is incompatible with `asyncComponent`)
+     * @property {AsyncSvelteComponent} [asyncComponent] - Function that returns a Promise that fulfills with a Svelte component (e.g. `{asyncComponent: () => import('Foo.svelte')}`)
+     * @property {SvelteComponent} [loadingComponent] - Svelte component to be displayed while the async route is loading (as a placeholder); when unset or false-y, no component is shown while component
+     * @property {object} [loadingParams] - Optional dictionary passed to the `loadingComponent` component as params (for an exported prop called `params`)
+     * @property {object} [userData] - Optional object that will be passed to events such as `routeLoading`, `routeLoaded`, `conditionsFailed`
+     * @property {object} [props] - Optional key-value dictionary of static props that will be passed to the component. The props are expanded with {...props}, so the key in the dictionary becomes the name of the prop.
+     * @property {RoutePrecondition[]|RoutePrecondition} [conditions] - Route pre-conditions to add, which will be executed in order
+     */
+
+    /**
+     * Wraps a component to enable multiple capabilities:
+     * 1. Using dynamically-imported component, with (e.g. `{asyncComponent: () => import('Foo.svelte')}`), which also allows bundlers to do code-splitting.
+     * 2. Adding route pre-conditions (e.g. `{conditions: [...]}`)
+     * 3. Adding static props that are passed to the component
+     * 4. Adding custom userData, which is passed to route events (e.g. route loaded events) or to route pre-conditions (e.g. `{userData: {foo: 'bar}}`)
+     * 
+     * @param {WrapOptions} args - Arguments object
+     * @returns {WrappedComponent} Wrapped component
+     */
+    function wrap(args) {
+        if (!args) {
+            throw Error('Parameter args is required')
+        }
+
+        // We need to have one and only one of component and asyncComponent
+        // This does a "XNOR"
+        if (!args.component == !args.asyncComponent) {
+            throw Error('One and only one of component and asyncComponent is required')
+        }
+
+        // If the component is not async, wrap it into a function returning a Promise
+        if (args.component) {
+            args.asyncComponent = () => Promise.resolve(args.component);
+        }
+
+        // Parameter asyncComponent and each item of conditions must be functions
+        if (typeof args.asyncComponent != 'function') {
+            throw Error('Parameter asyncComponent must be a function')
+        }
+        if (args.conditions) {
+            // Ensure it's an array
+            if (!Array.isArray(args.conditions)) {
+                args.conditions = [args.conditions];
+            }
+            for (let i = 0; i < args.conditions.length; i++) {
+                if (!args.conditions[i] || typeof args.conditions[i] != 'function') {
+                    throw Error('Invalid parameter conditions[' + i + ']')
+                }
+            }
+        }
+
+        // Check if we have a placeholder component
+        if (args.loadingComponent) {
+            args.asyncComponent.loading = args.loadingComponent;
+            args.asyncComponent.loadingParams = args.loadingParams || undefined;
+        }
+
+        // Returns an object that contains all the functions to execute too
+        // The _sveltesparouter flag is to confirm the object was created by this router
+        const obj = {
+            component: args.asyncComponent,
+            userData: args.userData,
+            conditions: (args.conditions && args.conditions.length) ? args.conditions : undefined,
+            props: (args.props && Object.keys(args.props).length) ? args.props : {},
+            _sveltesparouter: true
+        };
+
+        return obj
     }
 
     function regexparam (str, loose) {
@@ -1604,99 +1697,6 @@ var app = (function () {
     	}
     }
 
-    const LOCAL_WALLET = 'localWallet';
-    const monthNames = [
-        "Jan","Feb","Mar","Apr",
-        "May","Jun","Jul","Aug",
-        "Sep", "Oct","Nov","Dec"
-    ];
-    function getYearList() {
-        const year = new Date().getFullYear();
-        const years = [year];
-        for (let i = 1;i <= 10;i++) {
-            years.push(year + i);
-            years.unshift(year - i);
-        }
-        return years;
-    }
-
-    function saveToLocalStorage(wallets) {
-        localStorage.setItem(LOCAL_WALLET, JSON.stringify(wallets));
-    }
-
-    function createWallet() {
-        const {subscribe, set, update} = writable(JSON.parse(localStorage.getItem(LOCAL_WALLET)) || []);
-
-        return {
-            subscribe,
-            addWallet: (wallet) => update(wallets => {
-                wallets = [...wallets, wallet];
-                saveToLocalStorage(wallets);
-                return wallets;
-            }),
-            deleteWallet: (walletId) => update(wallets => {
-                const walletIndex = wallets.findIndex(wallet => wallet.id === walletId);
-                if (walletIndex > -1) {
-                    wallets.splice(walletIndex, 1);
-                }
-                saveToLocalStorage(wallets);
-                return wallets;
-            }),
-            addTransaction: (transaction, walletId) => update(wallets => {
-                wallets = wallets.map(wallet => {
-                    if (wallet.id === walletId) {
-                        if (wallet.transactions[transaction.duration]) {
-                            wallet.transactions[transaction.duration] = [...wallet.transactions[transaction.duration], transaction];
-                        } else {
-                            wallet.transactions[transaction.duration] = [transaction];
-                        }
-                        transaction.type === 'debit' ? wallet.balance -= transaction.amount : wallet.balance += transaction.amount;
-                    }
-                    return wallet;
-                });
-                saveToLocalStorage(wallets);
-                return wallets;
-            }),
-            editTransaction: (transaction, walletId) => update(wallets => {
-                wallets = wallets.map(wallet => {
-                    if (wallet.id === walletId) {
-                        const transactionIndex = wallet.transactions[transaction.duration].findIndex(t => t.id === transaction.id);
-                        if (transactionIndex > -1) {
-                            const oldTransaction = wallet.transactions[transaction.duration][transactionIndex];
-                            transaction.type === 'debit' ? wallet.balance += oldTransaction.amount : wallet.balance -= oldTransaction.amount;
-                            wallet.transactions[transaction.duration][transactionIndex] = transaction;
-                        }
-                        transaction.type === 'debit' ? wallet.balance -= transaction.amount : wallet.balance += transaction.amount;
-                    }
-                    return wallet;
-                });
-                saveToLocalStorage(wallets);
-                return wallets;
-            }),
-            deleteTransaction: (transaction, walletId) => update(wallets => {
-                wallets = wallets.map(wallet => {
-                    if (wallet.id === walletId) {
-                        const transactionIndex = wallet.transactions[transaction.duration].findIndex(t => t.id === transaction.id);
-                        if (transactionIndex > -1) {
-                            wallet.transactions[transaction.duration].splice(transactionIndex, 1);
-                        }
-                        transaction.type === 'debit' ? wallet.balance += transaction.amount : wallet.balance -= transaction.amount;
-                    }
-                    return wallet;
-                });
-                saveToLocalStorage(wallets);
-                return wallets;
-            }),
-            reset: () => {
-                set([]);
-                localStorage.removeItem(LOCAL_WALLET);
-            }
-        }
-
-    }
-
-    const wallet = createWallet();
-
     /* src/components/wallets.svelte generated by Svelte v3.32.3 */
     const file = "src/components/wallets.svelte";
 
@@ -1706,7 +1706,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (29:4) {:else}
+    // (26:4) {:else}
     function create_else_block$1(ctx) {
     	let h3;
 
@@ -1714,8 +1714,8 @@ var app = (function () {
     		c: function create() {
     			h3 = element("h3");
     			h3.textContent = "No Wallets here.";
-    			attr_dev(h3, "class", "placeholder svelte-1jijydk");
-    			add_location(h3, file, 29, 8, 872);
+    			attr_dev(h3, "class", "placeholder svelte-80umtt");
+    			add_location(h3, file, 26, 8, 759);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -1730,14 +1730,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(29:4) {:else}",
+    		source: "(26:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (17:4) {#if $wallet && $wallet.length}
+    // (14:4) {#if $wallet && $wallet.length}
     function create_if_block$1(ctx) {
     	let div;
     	let each_value = /*$wallet*/ ctx[0];
@@ -1756,8 +1756,8 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", "wallet-wrap svelte-1jijydk");
-    			add_location(div, file, 17, 4, 490);
+    			attr_dev(div, "class", "wallet-wrap svelte-80umtt");
+    			add_location(div, file, 14, 4, 377);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1801,14 +1801,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(17:4) {#if $wallet && $wallet.length}",
+    		source: "(14:4) {#if $wallet && $wallet.length}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (19:8) {#each $wallet as wallet}
+    // (16:8) {#each $wallet as wallet}
     function create_each_block(ctx) {
     	let a;
     	let div;
@@ -1843,17 +1843,17 @@ var app = (function () {
     			t5 = space();
     			if (img.src !== (img_src_value = "assets/wallet.svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "wallet");
-    			attr_dev(img, "class", "svelte-1jijydk");
-    			add_location(img, file, 21, 20, 652);
-    			attr_dev(h3, "class", "svelte-1jijydk");
-    			add_location(h3, file, 22, 20, 715);
-    			attr_dev(h2, "class", "svelte-1jijydk");
-    			add_location(h2, file, 23, 20, 758);
-    			attr_dev(div, "class", "wallet svelte-1jijydk");
-    			add_location(div, file, 20, 16, 611);
+    			attr_dev(img, "class", "svelte-80umtt");
+    			add_location(img, file, 18, 20, 539);
+    			attr_dev(h3, "class", "svelte-80umtt");
+    			add_location(h3, file, 19, 20, 602);
+    			attr_dev(h2, "class", "svelte-80umtt");
+    			add_location(h2, file, 20, 20, 645);
+    			attr_dev(div, "class", "wallet svelte-80umtt");
+    			add_location(div, file, 17, 16, 498);
     			attr_dev(a, "href", a_href_value = "/" + /*wallet*/ ctx[2].id);
-    			attr_dev(a, "class", "svelte-1jijydk");
-    			add_location(a, file, 19, 12, 562);
+    			attr_dev(a, "class", "svelte-80umtt");
+    			add_location(a, file, 16, 12, 449);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, a, anchor);
@@ -1892,7 +1892,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(19:8) {#each $wallet as wallet}",
+    		source: "(16:8) {#each $wallet as wallet}",
     		ctx
     	});
 
@@ -1902,21 +1902,18 @@ var app = (function () {
     function create_fragment$1(ctx) {
     	let section;
     	let div0;
-    	let button0;
-    	let t1;
-    	let div1;
     	let h3;
-    	let t3;
+    	let t1;
     	let h2;
+    	let t2;
+    	let t3_value = /*$wallet*/ ctx[0].reduce(func, 0) + "";
+    	let t3;
     	let t4;
-    	let t5_value = /*$wallet*/ ctx[0].reduce(func, 0) + "";
     	let t5;
-    	let t6;
-    	let t7;
     	let a;
-    	let button1;
-    	let div2;
-    	let t9;
+    	let button;
+    	let div1;
+    	let t7;
     	let mounted;
     	let dispose;
 
@@ -1932,42 +1929,34 @@ var app = (function () {
     		c: function create() {
     			section = element("section");
     			div0 = element("div");
-    			button0 = element("button");
-    			button0.textContent = "Delete All";
-    			t1 = space();
-    			div1 = element("div");
     			h3 = element("h3");
     			h3.textContent = "Total Balance";
-    			t3 = space();
+    			t1 = space();
     			h2 = element("h2");
-    			t4 = text("₹");
-    			t5 = text(t5_value);
-    			t6 = space();
+    			t2 = text("₹");
+    			t3 = text(t3_value);
+    			t4 = space();
     			if_block.c();
-    			t7 = space();
+    			t5 = space();
     			a = element("a");
-    			button1 = element("button");
-    			div2 = element("div");
-    			div2.textContent = "Add Wallet";
-    			t9 = text("\n            +");
-    			attr_dev(button0, "class", "danger-btn");
-    			add_location(button0, file, 10, 8, 220);
-    			attr_dev(div0, "class", "top-bar svelte-1jijydk");
+    			button = element("button");
+    			div1 = element("div");
+    			div1.textContent = "Add Wallet";
+    			t7 = text("\n            +");
+    			attr_dev(h3, "class", "svelte-80umtt");
+    			add_location(h3, file, 10, 8, 226);
+    			attr_dev(h2, "class", "svelte-80umtt");
+    			add_location(h2, file, 11, 8, 257);
+    			attr_dev(div0, "class", "total-balance svelte-80umtt");
     			add_location(div0, file, 9, 4, 190);
-    			attr_dev(h3, "class", "svelte-1jijydk");
-    			add_location(h3, file, 13, 8, 339);
-    			attr_dev(h2, "class", "svelte-1jijydk");
-    			add_location(h2, file, 14, 8, 370);
-    			attr_dev(div1, "class", "total-balance svelte-1jijydk");
-    			add_location(div1, file, 12, 4, 303);
-    			attr_dev(div2, "class", "svelte-1jijydk");
-    			add_location(div2, file, 33, 12, 1008);
-    			attr_dev(button1, "class", "add-wallet svelte-1jijydk");
-    			add_location(button1, file, 32, 8, 968);
+    			attr_dev(div1, "class", "svelte-80umtt");
+    			add_location(div1, file, 30, 12, 895);
+    			attr_dev(button, "class", "add-wallet svelte-80umtt");
+    			add_location(button, file, 29, 8, 855);
     			attr_dev(a, "href", "/create");
-    			attr_dev(a, "class", "svelte-1jijydk");
-    			add_location(a, file, 31, 4, 932);
-    			attr_dev(section, "class", "svelte-1jijydk");
+    			attr_dev(a, "class", "svelte-80umtt");
+    			add_location(a, file, 28, 4, 819);
+    			attr_dev(section, "class", "svelte-80umtt");
     			add_location(section, file, 8, 0, 176);
     		},
     		l: function claim(nodes) {
@@ -1976,33 +1965,26 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, section, anchor);
     			append_dev(section, div0);
-    			append_dev(div0, button0);
-    			append_dev(section, t1);
-    			append_dev(section, div1);
-    			append_dev(div1, h3);
-    			append_dev(div1, t3);
-    			append_dev(div1, h2);
-    			append_dev(h2, t4);
-    			append_dev(h2, t5);
-    			append_dev(section, t6);
+    			append_dev(div0, h3);
+    			append_dev(div0, t1);
+    			append_dev(div0, h2);
+    			append_dev(h2, t2);
+    			append_dev(h2, t3);
+    			append_dev(section, t4);
     			if_block.m(section, null);
-    			append_dev(section, t7);
+    			append_dev(section, t5);
     			append_dev(section, a);
-    			append_dev(a, button1);
-    			append_dev(button1, div2);
-    			append_dev(button1, t9);
+    			append_dev(a, button);
+    			append_dev(button, div1);
+    			append_dev(button, t7);
 
     			if (!mounted) {
-    				dispose = [
-    					listen_dev(button0, "click", /*deleteAll*/ ctx[1], false, false, false),
-    					action_destroyer(link.call(null, a))
-    				];
-
+    				dispose = action_destroyer(link.call(null, a));
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*$wallet*/ 1 && t5_value !== (t5_value = /*$wallet*/ ctx[0].reduce(func, 0) + "")) set_data_dev(t5, t5_value);
+    			if (dirty & /*$wallet*/ 1 && t3_value !== (t3_value = /*$wallet*/ ctx[0].reduce(func, 0) + "")) set_data_dev(t3, t3_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
     				if_block.p(ctx, dirty);
@@ -2012,7 +1994,7 @@ var app = (function () {
 
     				if (if_block) {
     					if_block.c();
-    					if_block.m(section, t7);
+    					if_block.m(section, t5);
     				}
     			}
     		},
@@ -2022,7 +2004,7 @@ var app = (function () {
     			if (detaching) detach_dev(section);
     			if_block.d();
     			mounted = false;
-    			run_all(dispose);
+    			dispose();
     		}
     	};
 
@@ -2057,7 +2039,7 @@ var app = (function () {
     	});
 
     	$$self.$capture_state = () => ({ wallet, link, deleteAll, $wallet });
-    	return [$wallet, deleteAll];
+    	return [$wallet];
     }
 
     class Wallets extends SvelteComponentDev {
@@ -4058,8 +4040,13 @@ var app = (function () {
     	let t4;
     	let p1;
     	let t6;
+    	let div;
+    	let button;
+    	let t8;
     	let router;
     	let current;
+    	let mounted;
+    	let dispose;
     	router = new Router({ props: { routes }, $$inline: true });
 
     	const block = {
@@ -4074,21 +4061,29 @@ var app = (function () {
     			p0.textContent = "Store all your transactions";
     			t4 = space();
     			p1 = element("p");
-    			p1.textContent = "(All of your transactions are stored locally in your browser.)";
+    			p1.textContent = "(All of the data are stored in your browser.)";
     			t6 = space();
+    			div = element("div");
+    			button = element("button");
+    			button.textContent = "Delete All";
+    			t8 = space();
     			create_component(router.$$.fragment);
     			if (img.src !== (img_src_value = "assets/bank.svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "MiniBank");
-    			attr_dev(img, "class", "svelte-1aki8dy");
-    			add_location(img, file$5, 6, 1, 103);
-    			attr_dev(h1, "class", "svelte-1aki8dy");
-    			add_location(h1, file$5, 7, 1, 147);
-    			attr_dev(p0, "class", "svelte-1aki8dy");
-    			add_location(p0, file$5, 8, 1, 167);
-    			attr_dev(p1, "class", "svelte-1aki8dy");
-    			add_location(p1, file$5, 9, 1, 203);
-    			attr_dev(main, "class", "svelte-1aki8dy");
-    			add_location(main, file$5, 5, 0, 95);
+    			attr_dev(img, "class", "svelte-uexrqh");
+    			add_location(img, file$5, 11, 1, 200);
+    			attr_dev(h1, "class", "svelte-uexrqh");
+    			add_location(h1, file$5, 12, 1, 244);
+    			attr_dev(p0, "class", "svelte-uexrqh");
+    			add_location(p0, file$5, 13, 1, 264);
+    			attr_dev(p1, "class", "svelte-uexrqh");
+    			add_location(p1, file$5, 14, 1, 300);
+    			attr_dev(button, "class", "danger-btn");
+    			add_location(button, file$5, 16, 8, 384);
+    			attr_dev(div, "class", "top-bar svelte-uexrqh");
+    			add_location(div, file$5, 15, 1, 354);
+    			attr_dev(main, "class", "svelte-uexrqh");
+    			add_location(main, file$5, 10, 0, 192);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4103,8 +4098,16 @@ var app = (function () {
     			append_dev(main, t4);
     			append_dev(main, p1);
     			append_dev(main, t6);
+    			append_dev(main, div);
+    			append_dev(div, button);
+    			append_dev(main, t8);
     			mount_component(router, main, null);
     			current = true;
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", /*deleteAll*/ ctx[0], false, false, false);
+    				mounted = true;
+    			}
     		},
     		p: noop,
     		i: function intro(local) {
@@ -4119,6 +4122,8 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
     			destroy_component(router);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -4136,14 +4141,19 @@ var app = (function () {
     function instance$6($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
+
+    	function deleteAll() {
+    		wallet.reset();
+    	}
+
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ Router, routes });
-    	return [];
+    	$$self.$capture_state = () => ({ wallet, Router, routes, deleteAll });
+    	return [deleteAll];
     }
 
     class App extends SvelteComponentDev {
