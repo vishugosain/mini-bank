@@ -56,25 +56,25 @@
     </div>
     <div class="form-row">
         <label>
-            <h4>Name</h4>
+            <h4>Name<span class="required-asterik">*</span></h4>
             <input bind:value={transactionName} type="text" placeholder="Transaction Name">
         </label>
     </div>
     <div class="form-row">
         <label>
-            <h4>Description</h4>
+            <h4>Description<span class="required-asterik">*</span></h4>
             <input bind:value={transactionDesc} type="text" placeholder="Transaction Description">
         </label>
     </div>
     <div class="form-row">
         <label>
-            <h4>Transaction Amount (₹)</h4>
+            <h4>Transaction Amount (₹)<span class="required-asterik">*</span></h4>
             <input bind:value={transactionBalance} type="number" step="1" placeholder="Wallet Initial Balance">
         </label>
     </div>
     <div class="form-row">
         <label>
-            <h4>Transaction Type</h4>
+            <h4>Transaction Type<span class="required-asterik">*</span></h4>
             <select bind:value={transactionType}>
                 <option value="debit">Debit (-)</option>
                 <option value="credit">Credit (+)</option>

@@ -28,13 +28,13 @@ import {push, link} from 'svelte-spa-router';
     </div>
     <div class="form-row">
         <label>
-            <h4>Name</h4>
+            <h4>Name <span class="required-asterik">*</span></h4>
             <input bind:value={walletName} type="text" placeholder="Wallet Name">
         </label>
     </div>
     <div class="form-row">
         <label>
-            <h4>Initial Balance (₹)</h4>
+            <h4>Initial Balance (₹)<span class="required-asterik">*</span></h4>
             <input bind:value={walletInitialBalance} type="number" step="1" placeholder="Wallet Initial Balance">
         </label>
     </div>

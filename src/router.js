@@ -8,7 +8,7 @@ export const routes = {
     '/': Wallets,
     '/create': CreateWallet,
     '/:id': WalletDetails,
-    '/:id/add': CreateTransaction,
+    '/:id/:duration/add': CreateTransaction,
     '/:id/:date/:tId/edit': EditTransaction,
     '*': Wallets
 }

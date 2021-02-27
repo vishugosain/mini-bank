@@ -61,7 +61,7 @@
             <p class="placeholder">No Transactions</p>
         {/if}
     </div>
-    <a href="/{selectedWallet.id}/add" use:link>
+    <a href="/{selectedWallet.id}/{selectedDuration}/add" use:link>
         <button class="add-transaction">
             <div>Add Transaction</div>
             +
