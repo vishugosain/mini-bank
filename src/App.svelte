@@ -1,10 +1,11 @@
 <script>
 	import { wallet } from './store/wallet.store.js';
-	import Router from 'svelte-spa-router';
+	import Router, {push} from 'svelte-spa-router';
 	import {routes} from './router';
 
 	function deleteAll() {
 		wallet.reset();
+		push('/');
 	}
 </script>
 

@@ -12,7 +12,7 @@
     let selectedTransaction;
     onMount(async () => {
         const selectedWallet = $wallet.find(wallet => wallet.id === params.id);
-        selectedTransaction = selectedWallet.transactions[params.date].find(t => t.id === params.tId);
+        selectedTransaction = selectedWallet.transactions.find(t => t.id === params.tId);
         transactionName = selectedTransaction.name;
         transactionDesc = selectedTransaction.desc;
         transactionBalance = selectedTransaction.amount;
@@ -20,7 +20,7 @@
     });
     
     function editTransaction() {
-        if (!transactionName || !transactionDesc || transactionBalance == null) {
+        if (!transactionName || transactionBalance == null) {
             errorMsg = 'Fill all the required details';
             return;
         }
@@ -39,7 +39,7 @@
         wallet.deleteTransaction({
             id: params.tId,
             name: transactionName.trim(),
-            desc: transactionDesc.trim(),
+            desc: (transactionDesc && transactionDesc.trim()) || '',
             amount: transactionBalance,
             type: transactionType,
             duration: selectedTransaction.duration
@@ -57,7 +57,7 @@
     <div class="form-row">
         <label>
             <h4>Name<span class="required-asterik">*</span></h4>
-            <input bind:value={transactionName} type="text" placeholder="Transaction Name">
+            <input bind:value={transactionName} type="text" placeholder="Transaction Name" required="true">
         </label>
     </div>
     <div class="form-row">
@@ -69,7 +69,7 @@
     <div class="form-row">
         <label>
             <h4>Transaction Amount (₹)<span class="required-asterik">*</span></h4>
-            <input bind:value={transactionBalance} type="number" step="1" placeholder="Wallet Initial Balance">
+            <input bind:value={transactionBalance} type="number" step="1" placeholder="Wallet Initial Balance" required="true">
         </label>
     </div>
     <div class="form-row">

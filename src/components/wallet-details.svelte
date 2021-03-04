@@ -1,7 +1,8 @@
 <script>
     import { wallet } from "../store/wallet.store";
     import {link, push} from 'svelte-spa-router';
-    import { getYearList, monthNames } from "../app.constants";
+    import { getYearList, monthNames, MONTH_MAP } from "../app.constants";
+
     export let params = {}
     let selectedWallet = $wallet.find(wallet => wallet.id === params.id);
     let selectedYear = new Date().getFullYear();
@@ -27,13 +28,13 @@
     <div class="wallet-header">
         <img src="assets/wallet.svg" alt="wallet">
         <h3>{selectedWallet.name}</h3>
-        <h2>₹{selectedWallet.balance}</h2>
+        <h2 class={selectedWallet.balance < 0 ? 'red': 'green'}>₹{selectedWallet.balance}</h2>
     </div>
     <div class="date-picker">
         <!-- svelte-ignore a11y-no-onchange -->
         <select bind:value={selectedMonth} on:change={setDuration}>
             {#each monthNames as month}
-            <option value={month}>{month}</option>
+            <option value={month}>{MONTH_MAP[month]}</option>
             {/each}
         </select>
         <!-- svelte-ignore a11y-no-onchange -->
@@ -45,9 +46,9 @@
     </div>
     <div class="wallet-transactions">
         <h3>TRANSACTIONS</h3>
-        {#if selectedWallet.transactions && selectedWallet.transactions[selectedDuration] && selectedWallet.transactions[selectedDuration].length}
-            {#each selectedWallet.transactions[selectedDuration] as transaction}
-                <a href="/{selectedWallet.id}/{selectedDuration}/{transaction.id}/edit" use:link>
+        {#if selectedWallet.transactions && selectedWallet.transactions.length}
+            {#each selectedWallet.transactions.filter(t => t.duration === selectedDuration) as transaction}
+                <a href="/{selectedWallet.id}/{transaction.id}/edit" use:link>
                     <div class="transaction">
                         <div class="transaction-info">
                             <h4>{transaction.name}</h4>
@@ -104,6 +105,12 @@
             h2 {
                 color: $dark-blue;
                 margin-left: auto;
+                &.red {
+                    color: red;
+                }
+                &.green {
+                    color: green;
+                }
             }
             h3 {
                 font-size: 24px;

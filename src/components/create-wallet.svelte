@@ -15,7 +15,7 @@ import {push, link} from 'svelte-spa-router';
             id: '_' + Math.random().toString(36).substr(2, 9),
             name: walletName.trim(),
             balance: walletInitialBalance,
-            transactions: {},
+            transactions: [],
         });
         push('/');
     }

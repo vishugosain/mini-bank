@@ -2,11 +2,24 @@ import { writable } from 'svelte/store';
 import { LOCAL_WALLET } from '../app.constants';
 
 function saveToLocalStorage(wallets) {
+    console.log('Stored Data', wallets);
     localStorage.setItem(LOCAL_WALLET, JSON.stringify(wallets));
 }
 
+function getFromLocalStorage() {
+    return JSON.parse(localStorage.getItem(LOCAL_WALLET));
+}
+
+function restoreTransactionBalance(transaction, walletBalance) {
+    return Number(transaction.type === 'debit' ? (+walletBalance + +transaction.amount).toFixed(2) : (+walletBalance - +transaction.amount).toFixed(2));
+}
+
+function handleTransactionBalance(transaction, walletBalance) {
+    return Number(transaction.type === 'debit' ? (+walletBalance - +transaction.amount).toFixed(2) : (+walletBalance + +transaction.amount).toFixed(2));
+}
+
 function createWallet() {
-    const {subscribe, set, update} = writable(JSON.parse(localStorage.getItem(LOCAL_WALLET)) || []);
+    const {subscribe, set, update} = writable(getFromLocalStorage() || []);
 
     return {
         subscribe,
@@ -26,12 +39,8 @@ function createWallet() {
         addTransaction: (transaction, walletId) => update(wallets => {
             wallets = wallets.map(wallet => {
                 if (wallet.id === walletId) {
-                    if (wallet.transactions[transaction.duration]) {
-                        wallet.transactions[transaction.duration] = [...wallet.transactions[transaction.duration], transaction];
-                    } else {
-                        wallet.transactions[transaction.duration] = [transaction];
-                    }
-                    transaction.type === 'debit' ? wallet.balance -= transaction.amount : wallet.balance += transaction.amount;
+                    wallet.transactions = [...wallet.transactions, transaction];
+                    wallet.balance = handleTransactionBalance(transaction, wallet.balance);
                 }
                 return wallet;
             });
@@ -41,13 +50,14 @@ function createWallet() {
         editTransaction: (transaction, walletId) => update(wallets => {
             wallets = wallets.map(wallet => {
                 if (wallet.id === walletId) {
-                    const transactionIndex = wallet.transactions[transaction.duration].findIndex(t => t.id === transaction.id);
-                    if (transactionIndex > -1) {
-                        const oldTransaction = wallet.transactions[transaction.duration][transactionIndex];
-                        transaction.type === 'debit' ? wallet.balance += oldTransaction.amount : wallet.balance -= oldTransaction.amount;
-                        wallet.transactions[transaction.duration][transactionIndex] = transaction;
-                    }
-                    transaction.type === 'debit' ? wallet.balance -= transaction.amount : wallet.balance += transaction.amount;
+                    wallet.transactions = [...wallet.transactions.map(trans => {
+                        if (trans.id === transaction.id) {
+                            wallet.balance = restoreTransactionBalance(trans, wallet.balance);
+                            wallet.balance = handleTransactionBalance(transaction, wallet.balance);
+                            return transaction;
+                        }
+                        return trans;
+                    })];
                 }
                 return wallet;
             });
@@ -57,11 +67,11 @@ function createWallet() {
         deleteTransaction: (transaction, walletId) => update(wallets => {
             wallets = wallets.map(wallet => {
                 if (wallet.id === walletId) {
-                    const transactionIndex = wallet.transactions[transaction.duration].findIndex(t => t.id === transaction.id);
-                    if (transactionIndex > -1) {
-                        wallet.transactions[transaction.duration].splice(transactionIndex, 1);
+                    const findIndex = wallet.transactions.findIndex(t => t.id === transaction.id);
+                    if (findIndex > -1) {
+                        wallet.balance = restoreTransactionBalance(transaction, wallet.balance);
+                        wallet.transactions.splice(findIndex, 1);
                     }
-                    transaction.type === 'debit' ? wallet.balance += transaction.amount : wallet.balance -= transaction.amount;
                 }
                 return wallet;
             });

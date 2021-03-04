@@ -9,6 +9,6 @@ export const routes = {
     '/create': CreateWallet,
     '/:id': WalletDetails,
     '/:id/:duration/add': CreateTransaction,
-    '/:id/:date/:tId/edit': EditTransaction,
+    '/:id/:tId/edit': EditTransaction,
     '*': Wallets
 }

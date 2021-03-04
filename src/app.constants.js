@@ -1,9 +1,23 @@
 export const LOCAL_WALLET = 'localWallet';
 export const monthNames = [
-    "Jan","Feb","Mar","Apr",
-    "May","Jun","Jul","Aug",
-    "Sep", "Oct","Nov","Dec"
+    "jan","feb","mar","apr",
+    "may","jun","jul","aug",
+    "sep", "oct","nov","dec"
 ];
+export const MONTH_MAP = {
+    'jan': 'January',
+    'feb': 'February',
+    'mar': 'March',
+    'apr': 'April',
+    'may': 'May',
+    'jun': 'June',
+    'jul': 'July',
+    'aug': 'August',
+    'sep': 'September',
+    'oct': 'October',
+    'nov': 'November',
+    'dec': 'December'
+};
 export function getYearList() {
     const year = new Date().getFullYear();
     const years = [year];

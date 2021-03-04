@@ -10,7 +10,7 @@
     let transactionBalance = 0;
     let transactionType = 'debit';
     function addTransaction() {
-        if (!transactionName || !transactionDesc || transactionBalance == null) {
+        if (!transactionName || transactionBalance == null) {
             errorMsg = 'Fill all the required details';
             return;
         }
@@ -18,10 +18,10 @@
         wallet.addTransaction({
             id: '_' + Math.random().toString(36).substr(2, 9),
             name: transactionName.trim(),
-            desc: transactionDesc.trim(),
+            desc: (transactionDesc && transactionDesc.trim()) || '',
             amount: transactionBalance,
             type: transactionType,
-            duration: params.duration
+            duration: params.duration.toLowerCase()
         }, params.id);
         push(`/${params.id}`);
     }
@@ -35,19 +35,19 @@
         <div class="form-row">
             <label>
                 <h4>Name<span class="required-asterik">*</span></h4>
-                <input bind:value={transactionName} type="text" placeholder="Transaction Name">
+                <input bind:value={transactionName} type="text" placeholder="Transaction Name" required="true">
             </label>
         </div>
         <div class="form-row">
             <label>
-                <h4>Description<span class="required-asterik">*</span></h4>
+                <h4>Description</h4>
                 <input bind:value={transactionDesc} type="text" placeholder="Transaction Description">
             </label>
         </div>
         <div class="form-row">
             <label>
                 <h4>Transaction Amount (₹)<span class="required-asterik">*</span></h4>
-                <input bind:value={transactionBalance} type="number" step="1" placeholder="Wallet Initial Balance">
+                <input bind:value={transactionBalance} type="number" step="1" placeholder="Wallet Initial Balance" required="true">
             </label>
         </div>
         <div class="form-row">
