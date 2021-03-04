@@ -105,12 +105,6 @@
             h2 {
                 color: $dark-blue;
                 margin-left: auto;
-                &.red {
-                    color: red;
-                }
-                &.green {
-                    color: green;
-                }
             }
             h3 {
                 font-size: 24px;
@@ -136,14 +130,6 @@
                     }
                     h5 {
                         color: $gray;
-                    }
-                }
-                h2 {
-                    &.red {
-                        color: $red;
-                    }
-                    &.green {
-                        color: $green;
                     }
                 }
             }

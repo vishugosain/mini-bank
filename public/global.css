@@ -70,3 +70,10 @@ button:disabled {
 .required-asterik {
 	color: #e74c3c;
 }
+
+.red {
+	color: #e74c3c;
+}
+.green {
+	color: #2ecc71;
+}

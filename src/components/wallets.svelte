@@ -2,9 +2,6 @@
     import { wallet } from '../store/wallet.store.js';
     import {link} from 'svelte-spa-router';
 
-    function deleteAll() {
-        wallet.reset();
-    }
 </script>
 <section>
     <div class="total-balance">
