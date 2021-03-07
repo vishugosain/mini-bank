@@ -21,7 +21,8 @@
             desc: (transactionDesc && transactionDesc.trim()) || '',
             amount: transactionBalance,
             type: transactionType,
-            duration: params.duration.toLowerCase()
+            duration: params.duration.toLowerCase(),
+            createdAt: new Date().toIndianFormat()
         }, params.id);
         push(`/${params.id}`);
     }

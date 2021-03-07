@@ -1,6 +1,14 @@
 import App from './App.svelte';
 import {monthNames} from './app.constants';
 
+let o = new Intl.DateTimeFormat("en-IN" , {
+    timeStyle: "short",
+    dateStyle: "medium"
+});
+Date.prototype.toIndianFormat = function() {
+    return o.format(this);
+}
+
 Date.prototype.toDurationFormat = function() {
     
     let monthIndex = this.getMonth();

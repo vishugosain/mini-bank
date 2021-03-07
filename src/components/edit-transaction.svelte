@@ -31,7 +31,8 @@
             desc: transactionDesc.trim(),
             amount: transactionBalance,
             type: transactionType,
-            duration: selectedTransaction.duration
+            duration: selectedTransaction.duration,
+            createdAt: new Date().toIndianFormat()
         }, params.id);
         push(`/${params.id}`);
     }
@@ -42,7 +43,8 @@
             desc: (transactionDesc && transactionDesc.trim()) || '',
             amount: transactionBalance,
             type: transactionType,
-            duration: selectedTransaction.duration
+            duration: selectedTransaction.duration,
+            createdAt: new Date().toIndianFormat()
         }, params.id);
         push(`/${params.id}`);
     }

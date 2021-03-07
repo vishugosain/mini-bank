@@ -4,6 +4,7 @@
     import { getYearList, monthNames, MONTH_MAP } from "../app.constants";
 
     export let params = {}
+    let today = new Date().toIndianFormat();
     let selectedWallet = $wallet.find(wallet => wallet.id === params.id);
     let selectedYear = new Date().getFullYear();
     let selectedMonth = monthNames[new Date().getMonth()];
@@ -52,6 +53,7 @@
                     <div class="transaction">
                         <div class="transaction-info">
                             <h4>{transaction.name}</h4>
+                            <h5 class="created-at">{transaction.createdAt || today}</h5>
                             <h5>{transaction.desc}</h5>
                         </div>
                         <h2 class={transaction.type === 'debit' ? 'red': 'green'}>₹{transaction.amount}</h2>
@@ -130,6 +132,9 @@
                     }
                     h5 {
                         color: $gray;
+                        &.created-at {
+                            color: $dark-blue;
+                        }
                     }
                 }
             }
