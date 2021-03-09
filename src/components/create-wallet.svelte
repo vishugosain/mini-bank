@@ -2,15 +2,19 @@
 import { wallet } from "../store/wallet.store";
 import {push, link} from 'svelte-spa-router';
 
-    let errorMsg = '';
     let walletName = '';
     let walletInitialBalance = 0;
+    let isTouched = false;
     function addWallet() {
         if (!walletName || walletInitialBalance == null) {
-            errorMsg = 'Fill all the required details';
+            isTouched = true;
             return;
         }
-        errorMsg = '';
+        if (walletName.length > 30) {
+            isTouched = true;
+            return;
+        }
+        isTouched = false;
         wallet.addWallet({
             id: '_' + Math.random().toString(36).substr(2, 9),
             name: walletName.trim(),
@@ -29,18 +33,33 @@ import {push, link} from 'svelte-spa-router';
     <div class="form-row">
         <label>
             <h4>Name <span class="required-asterik">*</span></h4>
-            <input bind:value={walletName} type="text" placeholder="Wallet Name">
+            <input bind:value={walletName} type="text" placeholder="Wallet Name" class={walletName.length > 30 ? 'error' : ''}>
+            <div class="input-bottom">
+                {#if isTouched}
+                    {#if !walletName}
+                        <h5 class="red">This field is required</h5>
+                    {/if}
+                    {#if walletName.length > 30}
+                        <h5 class="red">Wallet name cannot be more than 30 characters.</h5>
+                    {/if}
+                {/if}
+                <h4 class={walletName.length > 30 ? 'char-count red': 'char-count'}>{walletName.length}/30</h4>
+            </div>
         </label>
     </div>
     <div class="form-row">
         <label>
             <h4>Initial Balance (₹)<span class="required-asterik">*</span></h4>
             <input bind:value={walletInitialBalance} type="number" step="1" placeholder="Wallet Initial Balance">
+            <div class="input-bottom">
+                {#if isTouched}
+                    {#if walletInitialBalance === null}
+                        <h5 class="red">This field is required</h5>
+                    {/if}
+                {/if}
+            </div>
         </label>
     </div>
-    {#if errorMsg}
-        <div class="error-msg">{errorMsg}</div>
-    {/if}
     <button on:click|preventDefault={addWallet}>
         <img src="assets/arrow-right.svg" alt="Add">
     </button>
@@ -67,7 +86,7 @@ import {push, link} from 'svelte-spa-router';
         .form-row {
             margin: 8px 0;
             label {
-                h4 {
+                &>h4 {
                     color: $dark-blue;
                     text-transform: uppercase;
                     margin-bottom: 8px;
@@ -81,6 +100,16 @@ import {push, link} from 'svelte-spa-router';
                 font-family: 'Poppins', sans-serif;
                 &::placeholder {
                     color: $gray;
+                }
+            }
+            .input-bottom {
+                display: flex;
+                align-items: center;
+                h4 {
+                    margin-left: auto;
+                }
+                h5 {
+                    font-weight: 400;
                 }
             }
         }

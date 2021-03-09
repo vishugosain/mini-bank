@@ -72,8 +72,8 @@ button:disabled {
 }
 
 .red {
-	color: #e74c3c;
+	color: #e74c3c !important;
 }
 .green {
-	color: #2ecc71;
+	color: #2ecc71 !important;
 }

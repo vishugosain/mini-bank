@@ -14,8 +14,10 @@
             <a href="/{wallet.id}" use:link>
                 <div class="wallet">
                     <img src="assets/wallet.svg" alt="wallet">
-                    <h3>{wallet.name}</h3>
-                    <h2>₹{wallet.balance}</h2>
+                    <div class="wallet-info">
+                        <h3>{wallet.name}</h3>
+                        <h4 class="balance">₹{wallet.balance}</h4>
+                    </div>
                 </div>
             </a>
         {/each}
@@ -34,7 +36,7 @@
     @import '../styles/_main.scss';
     section {
         padding: 16px;
-        min-width: 400px;
+        width: 400px;
         .total-balance {
             display: flex;
             align-items: center;
@@ -53,6 +55,7 @@
             display: flex;
             margin: 16px 0;
             flex-direction: column;
+            width: 100%;
             a {
                 width: 100%;
             }
@@ -69,15 +72,21 @@
                     height: 48px;
                     object-fit: contain;
                 }
-                h2 {
-                    margin-left: auto;
-                    color: $dark-blue;
-                }
-                h3 {
-                    color: black;
-                    font-weight: 400;
-                    margin-left: 8px;
-                    font-size: 24px;
+                .wallet-info {
+                    padding: 0 8px;
+                    flex: 1 1 0;
+                    overflow: hidden;
+                    h3 {
+                        color: black;
+                        font-weight: 400;
+                        font-size: 24px;
+                        width: 100%;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                    h4 {
+                            color: $dark-blue;
+                    }
                 }
             }
         }
