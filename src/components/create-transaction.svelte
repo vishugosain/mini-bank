@@ -4,17 +4,25 @@
 
     export let params = {};
     
-    let errorMsg = '';
     let transactionName = '';
     let transactionDesc = '';
     let transactionBalance = 0;
     let transactionType = 'debit';
+    let isTouched = false;
     function addTransaction() {
         if (!transactionName || transactionBalance == null) {
-            errorMsg = 'Fill all the required details';
+            isTouched = true;
             return;
         }
-        errorMsg = '';
+        if (transactionName.length > 30) {
+            isTouched = true;
+            return;
+        }
+        if (transactionDesc.length > 200) {
+            isTouched = true;
+            return;
+        }
+        isTouched = false;
         wallet.addTransaction({
             id: '_' + Math.random().toString(36).substr(2, 9),
             name: transactionName.trim(),
@@ -37,12 +45,31 @@
             <label>
                 <h4>Name<span class="required-asterik">*</span></h4>
                 <input bind:value={transactionName} type="text" placeholder="Transaction Name" required="true">
+                <div class="input-bottom">
+                    {#if isTouched}
+                        {#if !transactionName}
+                            <h5 class="red">This field is required</h5>
+                        {/if}
+                        {#if transactionName.length > 30}
+                            <h5 class="red">Wallet name cannot be more than 30 characters.</h5>
+                        {/if}
+                    {/if}
+                    <h4 class={transactionName.length > 30 ? 'char-count red': 'char-count'}>{transactionName.length}/30</h4>
+                </div>
             </label>
         </div>
         <div class="form-row">
             <label>
                 <h4>Description</h4>
-                <input bind:value={transactionDesc} type="text" placeholder="Transaction Description">
+                <textarea bind:value={transactionDesc} type="text" placeholder="Transaction Description"></textarea>
+                <div class="input-bottom">
+                    {#if isTouched}
+                        {#if transactionDesc.length > 200}
+                            <h5 class="red">Wallet Description cannot be more than 200 characters.</h5>
+                        {/if}
+                    {/if}
+                    <h4 class={transactionDesc.length > 200 ? 'char-count red': 'char-count'}>{transactionDesc.length}/200</h4>
+                </div>
             </label>
         </div>
         <div class="form-row">
@@ -60,9 +87,6 @@
                 </select>
             </label>
         </div>
-        {#if errorMsg}
-            <div class="error-msg">{errorMsg}</div>
-        {/if}
         <button on:click|preventDefault={addTransaction}>
             <img src="assets/arrow-right.svg" alt="Add">
         </button>
@@ -89,13 +113,13 @@
             .form-row {
                 margin: 8px 0;
                 label {
-                    h4 {
+                    >h4 {
                         color: $dark-blue;
                         text-transform: uppercase;
                         margin-bottom: 8px;
                     }
                 }
-                input {
+                input, textarea {
                     width: 100%;
                     padding: 12px;
                     outline: none;
@@ -105,10 +129,16 @@
                         color: $gray;
                     }
                 }
-            }
-            .error-msg {
-                margin: 8px 0;
-                color: $red;
+                .input-bottom {
+                    display: flex;
+                    align-items: center;
+                    h4 {
+                        margin-left: auto;
+                    }
+                    h5 {
+                        font-weight: 400;
+                    }
+                }
             }
             button {
                 background: $dark-blue;

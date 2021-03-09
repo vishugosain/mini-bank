@@ -46,7 +46,15 @@
         </select>
     </div>
     <div class="wallet-transactions">
-        <h3>TRANSACTIONS</h3>
+        <div class="header">
+            <h3>TRANSACTIONS</h3>
+            <a href="/{selectedWallet.id}/{selectedDuration}/add" use:link>
+                <button class="add-transaction">
+                    <div>Add Transaction</div>
+                    +
+                </button>
+            </a>
+        </div>
         {#if selectedWallet.transactions && selectedWallet.transactions.length}
             {#each selectedWallet.transactions.filter(t => t.duration === selectedDuration) as transaction}
                 <a href="/{selectedWallet.id}/{transaction.id}/edit" use:link>
@@ -64,12 +72,6 @@
             <p class="placeholder">No Transactions</p>
         {/if}
     </div>
-    <a href="/{selectedWallet.id}/{selectedDuration}/add" use:link>
-        <button class="add-transaction">
-            <div>Add Transaction</div>
-            +
-        </button>
-    </a>
 </section>
 <style type="text/scss">
     @import '../styles/_main.scss';
@@ -77,7 +79,7 @@
         border-radius: 8px;
         box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
         margin: 32px 0;
-        min-width: 400px;
+        width: 400px;
         padding: 16px;
         box-sizing: border-box;
         .top-bar {
@@ -118,6 +120,12 @@
         }
         .wallet-transactions {
             margin-top: 8px;
+            max-height: 500px;
+            overflow: auto;
+            .header {
+                display: flex;
+                align-items: center;
+            }
             .transaction {
                 display: flex;
                 align-items: center;
@@ -127,11 +135,15 @@
                 padding: 8px;
                 margin: 8px 0;
                 .transaction-info {
+                    flex: 1 1 0;
+                    overflow: hidden;
+                    padding-right: 8px;
                     h4 {
                         color: $dark-blue;
                     }
                     h5 {
                         color: $gray;
+                        word-break: break-word;
                         &.created-at {
                             color: $dark-blue;
                         }

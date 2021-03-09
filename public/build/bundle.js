@@ -1730,7 +1730,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (25:4) {:else}
+    // (31:4) {:else}
     function create_else_block$1(ctx) {
     	let h3;
 
@@ -1738,8 +1738,8 @@ var app = (function () {
     		c: function create() {
     			h3 = element("h3");
     			h3.textContent = "No Wallets here.";
-    			attr_dev(h3, "class", "placeholder svelte-1ewblkp");
-    			add_location(h3, file, 25, 8, 799);
+    			attr_dev(h3, "class", "placeholder svelte-14s3o9f");
+    			add_location(h3, file, 31, 8, 942);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -1754,14 +1754,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(25:4) {:else}",
+    		source: "(31:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (11:4) {#if $wallet && $wallet.length}
+    // (17:4) {#if $wallet && $wallet.length}
     function create_if_block$1(ctx) {
     	let div;
     	let each_value = /*$wallet*/ ctx[0];
@@ -1780,8 +1780,8 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", "wallet-wrap svelte-1ewblkp");
-    			add_location(div, file, 11, 4, 320);
+    			attr_dev(div, "class", "wallet-wrap svelte-14s3o9f");
+    			add_location(div, file, 17, 4, 463);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1825,14 +1825,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(11:4) {#if $wallet && $wallet.length}",
+    		source: "(17:4) {#if $wallet && $wallet.length}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (13:8) {#each $wallet as wallet}
+    // (19:8) {#each $wallet as wallet}
     function create_each_block(ctx) {
     	let a;
     	let div1;
@@ -1869,19 +1869,19 @@ var app = (function () {
     			t5 = space();
     			if (img.src !== (img_src_value = "assets/wallet.svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "wallet");
-    			attr_dev(img, "class", "svelte-1ewblkp");
-    			add_location(img, file, 15, 20, 482);
-    			attr_dev(h3, "class", "svelte-1ewblkp");
-    			add_location(h3, file, 17, 24, 595);
-    			attr_dev(h4, "class", "balance svelte-1ewblkp");
-    			add_location(h4, file, 18, 24, 642);
-    			attr_dev(div0, "class", "wallet-info svelte-1ewblkp");
-    			add_location(div0, file, 16, 20, 545);
-    			attr_dev(div1, "class", "wallet svelte-1ewblkp");
-    			add_location(div1, file, 14, 16, 441);
+    			attr_dev(img, "class", "svelte-14s3o9f");
+    			add_location(img, file, 21, 20, 625);
+    			attr_dev(h3, "class", "svelte-14s3o9f");
+    			add_location(h3, file, 23, 24, 738);
+    			attr_dev(h4, "class", "balance svelte-14s3o9f");
+    			add_location(h4, file, 24, 24, 785);
+    			attr_dev(div0, "class", "wallet-info svelte-14s3o9f");
+    			add_location(div0, file, 22, 20, 688);
+    			attr_dev(div1, "class", "wallet svelte-14s3o9f");
+    			add_location(div1, file, 20, 16, 584);
     			attr_dev(a, "href", a_href_value = "/" + /*wallet*/ ctx[1].id);
-    			attr_dev(a, "class", "svelte-1ewblkp");
-    			add_location(a, file, 13, 12, 392);
+    			attr_dev(a, "class", "svelte-14s3o9f");
+    			add_location(a, file, 19, 12, 535);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, a, anchor);
@@ -1921,7 +1921,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(13:8) {#each $wallet as wallet}",
+    		source: "(19:8) {#each $wallet as wallet}",
     		ctx
     	});
 
@@ -1930,18 +1930,18 @@ var app = (function () {
 
     function create_fragment$1(ctx) {
     	let section;
-    	let div0;
-    	let h3;
-    	let t1;
-    	let h2;
-    	let t2;
-    	let t3_value = /*$wallet*/ ctx[0].reduce(func, 0) + "";
-    	let t3;
-    	let t4;
-    	let t5;
     	let a;
     	let button;
+    	let div0;
+    	let t1;
+    	let t2;
     	let div1;
+    	let h3;
+    	let t4;
+    	let h2;
+    	let t5;
+    	let t6_value = /*$wallet*/ ctx[0].reduce(func, 0) + "";
+    	let t6;
     	let t7;
     	let mounted;
     	let dispose;
@@ -1957,34 +1957,34 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			section = element("section");
-    			div0 = element("div");
-    			h3 = element("h3");
-    			h3.textContent = "Total Balance";
-    			t1 = space();
-    			h2 = element("h2");
-    			t2 = text("₹");
-    			t3 = text(t3_value);
-    			t4 = space();
-    			if_block.c();
-    			t5 = space();
     			a = element("a");
     			button = element("button");
+    			div0 = element("div");
+    			div0.textContent = "Add Wallet";
+    			t1 = text("\n            +");
+    			t2 = space();
     			div1 = element("div");
-    			div1.textContent = "Add Wallet";
-    			t7 = text("\n            +");
-    			attr_dev(h3, "class", "svelte-1ewblkp");
-    			add_location(h3, file, 7, 8, 169);
-    			add_location(h2, file, 8, 8, 200);
-    			attr_dev(div0, "class", "total-balance svelte-1ewblkp");
-    			add_location(div0, file, 6, 4, 133);
-    			attr_dev(div1, "class", "svelte-1ewblkp");
-    			add_location(div1, file, 29, 12, 935);
-    			attr_dev(button, "class", "add-wallet svelte-1ewblkp");
-    			add_location(button, file, 28, 8, 895);
+    			h3 = element("h3");
+    			h3.textContent = "Total Balance";
+    			t4 = space();
+    			h2 = element("h2");
+    			t5 = text("₹");
+    			t6 = text(t6_value);
+    			t7 = space();
+    			if_block.c();
+    			attr_dev(div0, "class", "svelte-14s3o9f");
+    			add_location(div0, file, 8, 12, 209);
+    			attr_dev(button, "class", "add-wallet svelte-14s3o9f");
+    			add_location(button, file, 7, 8, 169);
     			attr_dev(a, "href", "/create");
-    			attr_dev(a, "class", "svelte-1ewblkp");
-    			add_location(a, file, 27, 4, 859);
-    			attr_dev(section, "class", "svelte-1ewblkp");
+    			attr_dev(a, "class", "svelte-14s3o9f");
+    			add_location(a, file, 6, 4, 133);
+    			attr_dev(h3, "class", "svelte-14s3o9f");
+    			add_location(h3, file, 13, 8, 312);
+    			add_location(h2, file, 14, 8, 343);
+    			attr_dev(div1, "class", "total-balance svelte-14s3o9f");
+    			add_location(div1, file, 12, 4, 276);
+    			attr_dev(section, "class", "svelte-14s3o9f");
     			add_location(section, file, 5, 0, 119);
     		},
     		l: function claim(nodes) {
@@ -1992,19 +1992,19 @@ var app = (function () {
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, section, anchor);
-    			append_dev(section, div0);
-    			append_dev(div0, h3);
-    			append_dev(div0, t1);
-    			append_dev(div0, h2);
-    			append_dev(h2, t2);
-    			append_dev(h2, t3);
-    			append_dev(section, t4);
-    			if_block.m(section, null);
-    			append_dev(section, t5);
     			append_dev(section, a);
     			append_dev(a, button);
-    			append_dev(button, div1);
-    			append_dev(button, t7);
+    			append_dev(button, div0);
+    			append_dev(button, t1);
+    			append_dev(section, t2);
+    			append_dev(section, div1);
+    			append_dev(div1, h3);
+    			append_dev(div1, t4);
+    			append_dev(div1, h2);
+    			append_dev(h2, t5);
+    			append_dev(h2, t6);
+    			append_dev(section, t7);
+    			if_block.m(section, null);
 
     			if (!mounted) {
     				dispose = action_destroyer(link.call(null, a));
@@ -2012,7 +2012,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*$wallet*/ 1 && t3_value !== (t3_value = /*$wallet*/ ctx[0].reduce(func, 0) + "")) set_data_dev(t3, t3_value);
+    			if (dirty & /*$wallet*/ 1 && t6_value !== (t6_value = /*$wallet*/ ctx[0].reduce(func, 0) + "")) set_data_dev(t6, t6_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
     				if_block.p(ctx, dirty);
@@ -2022,7 +2022,7 @@ var app = (function () {
 
     				if (if_block) {
     					if_block.c();
-    					if_block.m(section, t5);
+    					if_block.m(section, null);
     				}
     			}
     		},
@@ -2709,7 +2709,7 @@ var app = (function () {
     	return block;
     }
 
-    // (63:8) {:else}
+    // (71:8) {:else}
     function create_else_block$2(ctx) {
     	let p;
 
@@ -2717,8 +2717,8 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "No Transactions";
-    			attr_dev(p, "class", "placeholder svelte-19mwr8l");
-    			add_location(p, file$2, 63, 12, 2611);
+    			attr_dev(p, "class", "placeholder svelte-1a9x5hz");
+    			add_location(p, file$2, 71, 12, 2896);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -2733,14 +2733,14 @@ var app = (function () {
     		block,
     		id: create_else_block$2.name,
     		type: "else",
-    		source: "(63:8) {:else}",
+    		source: "(71:8) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (50:8) {#if selectedWallet.transactions && selectedWallet.transactions.length}
+    // (58:8) {#if selectedWallet.transactions && selectedWallet.transactions.length}
     function create_if_block$3(ctx) {
     	let each_1_anchor;
     	let each_value = /*selectedWallet*/ ctx[4].transactions.filter(/*func*/ ctx[11]);
@@ -2801,14 +2801,14 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(50:8) {#if selectedWallet.transactions && selectedWallet.transactions.length}",
+    		source: "(58:8) {#if selectedWallet.transactions && selectedWallet.transactions.length}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (51:12) {#each selectedWallet.transactions.filter(t => t.duration === selectedDuration) as transaction}
+    // (59:12) {#each selectedWallet.transactions.filter(t => t.duration === selectedDuration) as transaction}
     function create_each_block$1(ctx) {
     	let a;
     	let div1;
@@ -2853,25 +2853,25 @@ var app = (function () {
     			t6 = text("₹");
     			t7 = text(t7_value);
     			t8 = space();
-    			attr_dev(h4, "class", "svelte-19mwr8l");
-    			add_location(h4, file$2, 54, 28, 2202);
-    			attr_dev(h50, "class", "created-at svelte-19mwr8l");
-    			add_location(h50, file$2, 55, 28, 2258);
-    			attr_dev(h51, "class", "svelte-19mwr8l");
-    			add_location(h51, file$2, 56, 28, 2347);
-    			attr_dev(div0, "class", "transaction-info svelte-19mwr8l");
-    			add_location(div0, file$2, 53, 24, 2143);
+    			attr_dev(h4, "class", "svelte-1a9x5hz");
+    			add_location(h4, file$2, 62, 28, 2487);
+    			attr_dev(h50, "class", "created-at svelte-1a9x5hz");
+    			add_location(h50, file$2, 63, 28, 2543);
+    			attr_dev(h51, "class", "svelte-1a9x5hz");
+    			add_location(h51, file$2, 64, 28, 2632);
+    			attr_dev(div0, "class", "transaction-info svelte-1a9x5hz");
+    			add_location(div0, file$2, 61, 24, 2428);
 
     			attr_dev(h2, "class", h2_class_value = "" + (null_to_empty(/*transaction*/ ctx[13].type === "debit"
     			? "red"
-    			: "green") + " svelte-19mwr8l"));
+    			: "green") + " svelte-1a9x5hz"));
 
-    			add_location(h2, file$2, 58, 24, 2430);
-    			attr_dev(div1, "class", "transaction svelte-19mwr8l");
-    			add_location(div1, file$2, 52, 20, 2093);
+    			add_location(h2, file$2, 66, 24, 2715);
+    			attr_dev(div1, "class", "transaction svelte-1a9x5hz");
+    			add_location(div1, file$2, 60, 20, 2378);
     			attr_dev(a, "href", a_href_value = "/" + /*selectedWallet*/ ctx[4].id + "/" + /*transaction*/ ctx[13].id + "/edit");
-    			attr_dev(a, "class", "svelte-19mwr8l");
-    			add_location(a, file$2, 51, 16, 2010);
+    			attr_dev(a, "class", "svelte-1a9x5hz");
+    			add_location(a, file$2, 59, 16, 2295);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, a, anchor);
@@ -2904,7 +2904,7 @@ var app = (function () {
 
     			if (dirty & /*selectedDuration*/ 4 && h2_class_value !== (h2_class_value = "" + (null_to_empty(/*transaction*/ ctx[13].type === "debit"
     			? "red"
-    			: "green") + " svelte-19mwr8l"))) {
+    			: "green") + " svelte-1a9x5hz"))) {
     				attr_dev(h2, "class", h2_class_value);
     			}
 
@@ -2923,7 +2923,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(51:12) {#each selectedWallet.transactions.filter(t => t.duration === selectedDuration) as transaction}",
+    		source: "(59:12) {#each selectedWallet.transactions.filter(t => t.duration === selectedDuration) as transaction}",
     		ctx
     	});
 
@@ -2955,15 +2955,16 @@ var app = (function () {
     	let t9;
     	let select1;
     	let t10;
-    	let div3;
+    	let div5;
+    	let div4;
     	let h31;
     	let t12;
-    	let t13;
     	let a1;
     	let button1;
-    	let div4;
-    	let t15;
+    	let div3;
+    	let t14;
     	let a1_href_value;
+    	let t15;
     	let mounted;
     	let dispose;
     	let each_value_2 = monthNames;
@@ -3025,56 +3026,59 @@ var app = (function () {
     			}
 
     			t10 = space();
-    			div3 = element("div");
+    			div5 = element("div");
+    			div4 = element("div");
     			h31 = element("h3");
     			h31.textContent = "TRANSACTIONS";
     			t12 = space();
-    			if_block.c();
-    			t13 = space();
     			a1 = element("a");
     			button1 = element("button");
-    			div4 = element("div");
-    			div4.textContent = "Add Transaction";
-    			t15 = text("\n            +");
+    			div3 = element("div");
+    			div3.textContent = "Add Transaction";
+    			t14 = text("\n                    +");
+    			t15 = space();
+    			if_block.c();
     			if (img0.src !== (img0_src_value = "assets/arrow-left.svg")) attr_dev(img0, "src", img0_src_value);
     			attr_dev(img0, "alt", "Back");
-    			attr_dev(img0, "class", "svelte-19mwr8l");
+    			attr_dev(img0, "class", "svelte-1a9x5hz");
     			add_location(img0, file$2, 24, 12, 830);
     			attr_dev(a0, "href", "/");
-    			attr_dev(a0, "class", "svelte-19mwr8l");
+    			attr_dev(a0, "class", "svelte-1a9x5hz");
     			add_location(a0, file$2, 23, 8, 796);
     			attr_dev(button0, "class", "danger-btn");
     			add_location(button0, file$2, 26, 8, 896);
-    			attr_dev(div0, "class", "top-bar svelte-19mwr8l");
+    			attr_dev(div0, "class", "top-bar svelte-1a9x5hz");
     			add_location(div0, file$2, 22, 4, 766);
     			if (img1.src !== (img1_src_value = "assets/wallet.svg")) attr_dev(img1, "src", img1_src_value);
     			attr_dev(img1, "alt", "wallet");
-    			attr_dev(img1, "class", "svelte-19mwr8l");
+    			attr_dev(img1, "class", "svelte-1a9x5hz");
     			add_location(img1, file$2, 29, 8, 1014);
-    			attr_dev(h30, "class", "svelte-19mwr8l");
+    			attr_dev(h30, "class", "svelte-1a9x5hz");
     			add_location(h30, file$2, 30, 8, 1065);
-    			attr_dev(h2, "class", "" + (null_to_empty(/*selectedWallet*/ ctx[4].balance < 0 ? "red" : "green") + " svelte-19mwr8l"));
+    			attr_dev(h2, "class", "" + (null_to_empty(/*selectedWallet*/ ctx[4].balance < 0 ? "red" : "green") + " svelte-1a9x5hz"));
     			add_location(h2, file$2, 31, 8, 1104);
-    			attr_dev(div1, "class", "wallet-header svelte-19mwr8l");
+    			attr_dev(div1, "class", "wallet-header svelte-1a9x5hz");
     			add_location(div1, file$2, 28, 4, 978);
     			if (/*selectedMonth*/ ctx[1] === void 0) add_render_callback(() => /*select0_change_handler*/ ctx[9].call(select0));
     			add_location(select0, file$2, 35, 8, 1288);
     			if (/*selectedYear*/ ctx[0] === void 0) add_render_callback(() => /*select1_change_handler*/ ctx[10].call(select1));
     			add_location(select1, file$2, 41, 8, 1544);
-    			attr_dev(div2, "class", "date-picker svelte-19mwr8l");
+    			attr_dev(div2, "class", "date-picker svelte-1a9x5hz");
     			add_location(div2, file$2, 33, 4, 1206);
-    			attr_dev(h31, "class", "svelte-19mwr8l");
-    			add_location(h31, file$2, 48, 8, 1784);
-    			attr_dev(div3, "class", "wallet-transactions svelte-19mwr8l");
-    			add_location(div3, file$2, 47, 4, 1742);
-    			attr_dev(div4, "class", "svelte-19mwr8l");
-    			add_location(div4, file$2, 68, 12, 2800);
-    			attr_dev(button1, "class", "add-transaction svelte-19mwr8l");
-    			add_location(button1, file$2, 67, 8, 2755);
+    			attr_dev(h31, "class", "svelte-1a9x5hz");
+    			add_location(h31, file$2, 49, 12, 1817);
+    			attr_dev(div3, "class", "svelte-1a9x5hz");
+    			add_location(div3, file$2, 52, 20, 1984);
+    			attr_dev(button1, "class", "add-transaction svelte-1a9x5hz");
+    			add_location(button1, file$2, 51, 16, 1931);
     			attr_dev(a1, "href", a1_href_value = "/" + /*selectedWallet*/ ctx[4].id + "/" + /*selectedDuration*/ ctx[2] + "/add");
-    			attr_dev(a1, "class", "svelte-19mwr8l");
-    			add_location(a1, file$2, 66, 4, 2683);
-    			attr_dev(section, "class", "svelte-19mwr8l");
+    			attr_dev(a1, "class", "svelte-1a9x5hz");
+    			add_location(a1, file$2, 50, 12, 1851);
+    			attr_dev(div4, "class", "header svelte-1a9x5hz");
+    			add_location(div4, file$2, 48, 8, 1784);
+    			attr_dev(div5, "class", "wallet-transactions svelte-1a9x5hz");
+    			add_location(div5, file$2, 47, 4, 1742);
+    			attr_dev(section, "class", "svelte-1a9x5hz");
     			add_location(section, file$2, 21, 0, 752);
     		},
     		l: function claim(nodes) {
@@ -3114,15 +3118,16 @@ var app = (function () {
 
     			select_option(select1, /*selectedYear*/ ctx[0]);
     			append_dev(section, t10);
-    			append_dev(section, div3);
-    			append_dev(div3, h31);
-    			append_dev(div3, t12);
-    			if_block.m(div3, null);
-    			append_dev(section, t13);
-    			append_dev(section, a1);
+    			append_dev(section, div5);
+    			append_dev(div5, div4);
+    			append_dev(div4, h31);
+    			append_dev(div4, t12);
+    			append_dev(div4, a1);
     			append_dev(a1, button1);
-    			append_dev(button1, div4);
-    			append_dev(button1, t15);
+    			append_dev(button1, div3);
+    			append_dev(button1, t14);
+    			append_dev(div5, t15);
+    			if_block.m(div5, null);
 
     			if (!mounted) {
     				dispose = [
@@ -3195,11 +3200,11 @@ var app = (function () {
     				select_option(select1, /*selectedYear*/ ctx[0]);
     			}
 
-    			if_block.p(ctx, dirty);
-
     			if (dirty & /*selectedDuration*/ 4 && a1_href_value !== (a1_href_value = "/" + /*selectedWallet*/ ctx[4].id + "/" + /*selectedDuration*/ ctx[2] + "/add")) {
     				attr_dev(a1, "href", a1_href_value);
     			}
+
+    			if_block.p(ctx, dirty);
     		},
     		i: noop,
     		o: noop,
@@ -3343,27 +3348,157 @@ var app = (function () {
     /* src/components/create-transaction.svelte generated by Svelte v3.32.3 */
     const file$3 = "src/components/create-transaction.svelte";
 
-    // (63:8) {#if errorMsg}
-    function create_if_block$4(ctx) {
-    	let div;
+    // (49:20) {#if isTouched}
+    function create_if_block_2$1(ctx) {
     	let t;
+    	let if_block1_anchor;
+    	let if_block0 = !/*transactionName*/ ctx[1] && create_if_block_4$1(ctx);
+    	let if_block1 = /*transactionName*/ ctx[1].length > 30 && create_if_block_3$1(ctx);
 
     	const block = {
     		c: function create() {
-    			div = element("div");
-    			t = text(/*errorMsg*/ ctx[1]);
-    			attr_dev(div, "class", "error-msg svelte-18fu6lr");
-    			add_location(div, file$3, 63, 12, 2344);
+    			if (if_block0) if_block0.c();
+    			t = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, t);
+    			if (if_block0) if_block0.m(target, anchor);
+    			insert_dev(target, t, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert_dev(target, if_block1_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*errorMsg*/ 2) set_data_dev(t, /*errorMsg*/ ctx[1]);
+    			if (!/*transactionName*/ ctx[1]) {
+    				if (if_block0) ; else {
+    					if_block0 = create_if_block_4$1(ctx);
+    					if_block0.c();
+    					if_block0.m(t.parentNode, t);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (/*transactionName*/ ctx[1].length > 30) {
+    				if (if_block1) ; else {
+    					if_block1 = create_if_block_3$1(ctx);
+    					if_block1.c();
+    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (if_block0) if_block0.d(detaching);
+    			if (detaching) detach_dev(t);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach_dev(if_block1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2$1.name,
+    		type: "if",
+    		source: "(49:20) {#if isTouched}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (50:24) {#if !transactionName}
+    function create_if_block_4$1(ctx) {
+    	let h5;
+
+    	const block = {
+    		c: function create() {
+    			h5 = element("h5");
+    			h5.textContent = "This field is required";
+    			attr_dev(h5, "class", "red svelte-9tl5rw");
+    			add_location(h5, file$3, 50, 28, 1711);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h5, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h5);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_4$1.name,
+    		type: "if",
+    		source: "(50:24) {#if !transactionName}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (53:24) {#if transactionName.length > 30}
+    function create_if_block_3$1(ctx) {
+    	let h5;
+
+    	const block = {
+    		c: function create() {
+    			h5 = element("h5");
+    			h5.textContent = "Wallet name cannot be more than 30 characters.";
+    			attr_dev(h5, "class", "red svelte-9tl5rw");
+    			add_location(h5, file$3, 53, 28, 1871);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h5, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h5);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_3$1.name,
+    		type: "if",
+    		source: "(53:24) {#if transactionName.length > 30}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (66:20) {#if isTouched}
+    function create_if_block$4(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*transactionDesc*/ ctx[2].length > 200 && create_if_block_1$1(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (/*transactionDesc*/ ctx[2].length > 200) {
+    				if (if_block) ; else {
+    					if_block = create_if_block_1$1(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
 
@@ -3371,7 +3506,37 @@ var app = (function () {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(63:8) {#if errorMsg}",
+    		source: "(66:20) {#if isTouched}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (67:24) {#if transactionDesc.length > 200}
+    function create_if_block_1$1(ctx) {
+    	let h5;
+
+    	const block = {
+    		c: function create() {
+    			h5 = element("h5");
+    			h5.textContent = "Wallet Description cannot be more than 200 characters.";
+    			attr_dev(h5, "class", "red svelte-9tl5rw");
+    			add_location(h5, file$3, 67, 28, 2551);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h5, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h5);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$1.name,
+    		type: "if",
+    		source: "(67:24) {#if transactionDesc.length > 200}",
     		ctx
     	});
 
@@ -3386,7 +3551,7 @@ var app = (function () {
     	let img0_src_value;
     	let a_href_value;
     	let t0;
-    	let div1;
+    	let div2;
     	let label0;
     	let h40;
     	let t1;
@@ -3394,37 +3559,53 @@ var app = (function () {
     	let t3;
     	let input0;
     	let t4;
-    	let div2;
-    	let label1;
+    	let div1;
+    	let t5;
     	let h41;
+    	let t6_value = /*transactionName*/ ctx[1].length + "";
     	let t6;
-    	let input1;
     	let t7;
-    	let div3;
-    	let label2;
-    	let h42;
+    	let h41_class_value;
     	let t8;
-    	let span1;
-    	let t10;
-    	let input2;
-    	let t11;
     	let div4;
-    	let label3;
-    	let h43;
+    	let label1;
+    	let h42;
+    	let t10;
+    	let textarea;
+    	let t11;
+    	let div3;
     	let t12;
-    	let span2;
+    	let h43;
+    	let t13_value = /*transactionDesc*/ ctx[2].length + "";
+    	let t13;
     	let t14;
+    	let h43_class_value;
+    	let t15;
+    	let div5;
+    	let label2;
+    	let h44;
+    	let t16;
+    	let span1;
+    	let t18;
+    	let input1;
+    	let t19;
+    	let div6;
+    	let label3;
+    	let h45;
+    	let t20;
+    	let span2;
+    	let t22;
     	let select;
     	let option0;
     	let option1;
-    	let t17;
-    	let t18;
+    	let t25;
     	let button;
     	let img1;
     	let img1_src_value;
     	let mounted;
     	let dispose;
-    	let if_block = /*errorMsg*/ ctx[1] && create_if_block$4(ctx);
+    	let if_block0 = /*isTouched*/ ctx[5] && create_if_block_2$1(ctx);
+    	let if_block1 = /*isTouched*/ ctx[5] && create_if_block$4(ctx);
 
     	const block = {
     		c: function create() {
@@ -3433,7 +3614,7 @@ var app = (function () {
     			a = element("a");
     			img0 = element("img");
     			t0 = space();
-    			div1 = element("div");
+    			div2 = element("div");
     			label0 = element("label");
     			h40 = element("h4");
     			t1 = text("Name");
@@ -3442,104 +3623,136 @@ var app = (function () {
     			t3 = space();
     			input0 = element("input");
     			t4 = space();
-    			div2 = element("div");
-    			label1 = element("label");
+    			div1 = element("div");
+    			if (if_block0) if_block0.c();
+    			t5 = space();
     			h41 = element("h4");
-    			h41.textContent = "Description";
-    			t6 = space();
-    			input1 = element("input");
-    			t7 = space();
-    			div3 = element("div");
-    			label2 = element("label");
+    			t6 = text(t6_value);
+    			t7 = text("/30");
+    			t8 = space();
+    			div4 = element("div");
+    			label1 = element("label");
     			h42 = element("h4");
-    			t8 = text("Transaction Amount (₹)");
+    			h42.textContent = "Description";
+    			t10 = space();
+    			textarea = element("textarea");
+    			t11 = space();
+    			div3 = element("div");
+    			if (if_block1) if_block1.c();
+    			t12 = space();
+    			h43 = element("h4");
+    			t13 = text(t13_value);
+    			t14 = text("/200");
+    			t15 = space();
+    			div5 = element("div");
+    			label2 = element("label");
+    			h44 = element("h4");
+    			t16 = text("Transaction Amount (₹)");
     			span1 = element("span");
     			span1.textContent = "*";
-    			t10 = space();
-    			input2 = element("input");
-    			t11 = space();
-    			div4 = element("div");
+    			t18 = space();
+    			input1 = element("input");
+    			t19 = space();
+    			div6 = element("div");
     			label3 = element("label");
-    			h43 = element("h4");
-    			t12 = text("Transaction Type");
+    			h45 = element("h4");
+    			t20 = text("Transaction Type");
     			span2 = element("span");
     			span2.textContent = "*";
-    			t14 = space();
+    			t22 = space();
     			select = element("select");
     			option0 = element("option");
     			option0.textContent = "Debit (-)";
     			option1 = element("option");
     			option1.textContent = "Credit (+)";
-    			t17 = space();
-    			if (if_block) if_block.c();
-    			t18 = space();
+    			t25 = space();
     			button = element("button");
     			img1 = element("img");
     			if (img0.src !== (img0_src_value = "assets/arrow-left.svg")) attr_dev(img0, "src", img0_src_value);
     			attr_dev(img0, "alt", "Back");
-    			attr_dev(img0, "class", "svelte-18fu6lr");
-    			add_location(img0, file$3, 32, 16, 1059);
+    			attr_dev(img0, "class", "svelte-9tl5rw");
+    			add_location(img0, file$3, 40, 16, 1248);
     			attr_dev(a, "href", a_href_value = "/" + /*params*/ ctx[0].id);
-    			add_location(a, file$3, 31, 12, 1010);
-    			attr_dev(div0, "class", "top-bar svelte-18fu6lr");
-    			add_location(div0, file$3, 30, 8, 976);
+    			add_location(a, file$3, 39, 12, 1199);
+    			attr_dev(div0, "class", "top-bar svelte-9tl5rw");
+    			add_location(div0, file$3, 38, 8, 1165);
     			attr_dev(span0, "class", "required-asterik");
-    			add_location(span0, file$3, 37, 24, 1211);
-    			attr_dev(h40, "class", "svelte-18fu6lr");
-    			add_location(h40, file$3, 37, 16, 1203);
+    			add_location(span0, file$3, 45, 24, 1400);
+    			attr_dev(h40, "class", "svelte-9tl5rw");
+    			add_location(h40, file$3, 45, 16, 1392);
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "placeholder", "Transaction Name");
     			input0.required = "true";
-    			attr_dev(input0, "class", "svelte-18fu6lr");
-    			add_location(input0, file$3, 38, 16, 1272);
-    			add_location(label0, file$3, 36, 12, 1179);
-    			attr_dev(div1, "class", "form-row svelte-18fu6lr");
-    			add_location(div1, file$3, 35, 8, 1144);
-    			attr_dev(h41, "class", "svelte-18fu6lr");
-    			add_location(h41, file$3, 43, 16, 1471);
-    			attr_dev(input1, "type", "text");
-    			attr_dev(input1, "placeholder", "Transaction Description");
-    			attr_dev(input1, "class", "svelte-18fu6lr");
-    			add_location(input1, file$3, 44, 16, 1508);
-    			add_location(label1, file$3, 42, 12, 1447);
-    			attr_dev(div2, "class", "form-row svelte-18fu6lr");
-    			add_location(div2, file$3, 41, 8, 1412);
+    			attr_dev(input0, "class", "svelte-9tl5rw");
+    			add_location(input0, file$3, 46, 16, 1461);
+
+    			attr_dev(h41, "class", h41_class_value = "" + (null_to_empty(/*transactionName*/ ctx[1].length > 30
+    			? "char-count red"
+    			: "char-count") + " svelte-9tl5rw"));
+
+    			add_location(h41, file$3, 56, 20, 2015);
+    			attr_dev(div1, "class", "input-bottom svelte-9tl5rw");
+    			add_location(div1, file$3, 47, 16, 1573);
+    			attr_dev(label0, "class", "svelte-9tl5rw");
+    			add_location(label0, file$3, 44, 12, 1368);
+    			attr_dev(div2, "class", "form-row svelte-9tl5rw");
+    			add_location(div2, file$3, 43, 8, 1333);
+    			attr_dev(h42, "class", "svelte-9tl5rw");
+    			add_location(h42, file$3, 62, 16, 2247);
+    			attr_dev(textarea, "type", "text");
+    			attr_dev(textarea, "placeholder", "Transaction Description");
+    			attr_dev(textarea, "class", "svelte-9tl5rw");
+    			add_location(textarea, file$3, 63, 16, 2284);
+
+    			attr_dev(h43, "class", h43_class_value = "" + (null_to_empty(/*transactionDesc*/ ctx[2].length > 200
+    			? "char-count red"
+    			: "char-count") + " svelte-9tl5rw"));
+
+    			add_location(h43, file$3, 70, 20, 2703);
+    			attr_dev(div3, "class", "input-bottom svelte-9tl5rw");
+    			add_location(div3, file$3, 64, 16, 2401);
+    			attr_dev(label1, "class", "svelte-9tl5rw");
+    			add_location(label1, file$3, 61, 12, 2223);
+    			attr_dev(div4, "class", "form-row svelte-9tl5rw");
+    			add_location(div4, file$3, 60, 8, 2188);
     			attr_dev(span1, "class", "required-asterik");
-    			add_location(span1, file$3, 49, 42, 1724);
-    			attr_dev(h42, "class", "svelte-18fu6lr");
-    			add_location(h42, file$3, 49, 16, 1698);
-    			attr_dev(input2, "type", "number");
-    			attr_dev(input2, "step", "1");
-    			attr_dev(input2, "placeholder", "Wallet Initial Balance");
-    			input2.required = "true";
-    			attr_dev(input2, "class", "svelte-18fu6lr");
-    			add_location(input2, file$3, 50, 16, 1785);
-    			add_location(label2, file$3, 48, 12, 1674);
-    			attr_dev(div3, "class", "form-row svelte-18fu6lr");
-    			add_location(div3, file$3, 47, 8, 1639);
+    			add_location(span1, file$3, 76, 42, 2963);
+    			attr_dev(h44, "class", "svelte-9tl5rw");
+    			add_location(h44, file$3, 76, 16, 2937);
+    			attr_dev(input1, "type", "number");
+    			attr_dev(input1, "step", "1");
+    			attr_dev(input1, "placeholder", "Wallet Initial Balance");
+    			input1.required = "true";
+    			attr_dev(input1, "class", "svelte-9tl5rw");
+    			add_location(input1, file$3, 77, 16, 3024);
+    			attr_dev(label2, "class", "svelte-9tl5rw");
+    			add_location(label2, file$3, 75, 12, 2913);
+    			attr_dev(div5, "class", "form-row svelte-9tl5rw");
+    			add_location(div5, file$3, 74, 8, 2878);
     			attr_dev(span2, "class", "required-asterik");
-    			add_location(span2, file$3, 55, 36, 2024);
-    			attr_dev(h43, "class", "svelte-18fu6lr");
-    			add_location(h43, file$3, 55, 16, 2004);
+    			add_location(span2, file$3, 82, 36, 3263);
+    			attr_dev(h45, "class", "svelte-9tl5rw");
+    			add_location(h45, file$3, 82, 16, 3243);
     			option0.__value = "debit";
     			option0.value = option0.__value;
-    			add_location(option0, file$3, 57, 20, 2143);
+    			add_location(option0, file$3, 84, 20, 3382);
     			option1.__value = "credit";
     			option1.value = option1.__value;
-    			add_location(option1, file$3, 58, 20, 2204);
-    			if (/*transactionType*/ ctx[5] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[10].call(select));
-    			add_location(select, file$3, 56, 16, 2085);
-    			add_location(label3, file$3, 54, 12, 1980);
-    			attr_dev(div4, "class", "form-row svelte-18fu6lr");
-    			add_location(div4, file$3, 53, 8, 1945);
+    			add_location(option1, file$3, 85, 20, 3443);
+    			if (/*transactionType*/ ctx[4] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[10].call(select));
+    			add_location(select, file$3, 83, 16, 3324);
+    			attr_dev(label3, "class", "svelte-9tl5rw");
+    			add_location(label3, file$3, 81, 12, 3219);
+    			attr_dev(div6, "class", "form-row svelte-9tl5rw");
+    			add_location(div6, file$3, 80, 8, 3184);
     			if (img1.src !== (img1_src_value = "assets/arrow-right.svg")) attr_dev(img1, "src", img1_src_value);
     			attr_dev(img1, "alt", "Add");
-    			attr_dev(img1, "class", "svelte-18fu6lr");
-    			add_location(img1, file$3, 66, 12, 2468);
-    			attr_dev(button, "class", "svelte-18fu6lr");
-    			add_location(button, file$3, 65, 8, 2406);
-    			attr_dev(form, "class", "svelte-18fu6lr");
-    			add_location(form, file$3, 29, 4, 961);
+    			attr_dev(img1, "class", "svelte-9tl5rw");
+    			add_location(img1, file$3, 90, 12, 3618);
+    			attr_dev(button, "class", "svelte-9tl5rw");
+    			add_location(button, file$3, 89, 8, 3556);
+    			attr_dev(form, "class", "svelte-9tl5rw");
+    			add_location(form, file$3, 37, 4, 1150);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3550,44 +3763,56 @@ var app = (function () {
     			append_dev(div0, a);
     			append_dev(a, img0);
     			append_dev(form, t0);
-    			append_dev(form, div1);
-    			append_dev(div1, label0);
+    			append_dev(form, div2);
+    			append_dev(div2, label0);
     			append_dev(label0, h40);
     			append_dev(h40, t1);
     			append_dev(h40, span0);
     			append_dev(label0, t3);
     			append_dev(label0, input0);
-    			set_input_value(input0, /*transactionName*/ ctx[2]);
-    			append_dev(form, t4);
-    			append_dev(form, div2);
-    			append_dev(div2, label1);
-    			append_dev(label1, h41);
-    			append_dev(label1, t6);
-    			append_dev(label1, input1);
-    			set_input_value(input1, /*transactionDesc*/ ctx[3]);
-    			append_dev(form, t7);
-    			append_dev(form, div3);
-    			append_dev(div3, label2);
-    			append_dev(label2, h42);
-    			append_dev(h42, t8);
-    			append_dev(h42, span1);
-    			append_dev(label2, t10);
-    			append_dev(label2, input2);
-    			set_input_value(input2, /*transactionBalance*/ ctx[4]);
-    			append_dev(form, t11);
+    			set_input_value(input0, /*transactionName*/ ctx[1]);
+    			append_dev(label0, t4);
+    			append_dev(label0, div1);
+    			if (if_block0) if_block0.m(div1, null);
+    			append_dev(div1, t5);
+    			append_dev(div1, h41);
+    			append_dev(h41, t6);
+    			append_dev(h41, t7);
+    			append_dev(form, t8);
     			append_dev(form, div4);
-    			append_dev(div4, label3);
-    			append_dev(label3, h43);
-    			append_dev(h43, t12);
-    			append_dev(h43, span2);
-    			append_dev(label3, t14);
+    			append_dev(div4, label1);
+    			append_dev(label1, h42);
+    			append_dev(label1, t10);
+    			append_dev(label1, textarea);
+    			set_input_value(textarea, /*transactionDesc*/ ctx[2]);
+    			append_dev(label1, t11);
+    			append_dev(label1, div3);
+    			if (if_block1) if_block1.m(div3, null);
+    			append_dev(div3, t12);
+    			append_dev(div3, h43);
+    			append_dev(h43, t13);
+    			append_dev(h43, t14);
+    			append_dev(form, t15);
+    			append_dev(form, div5);
+    			append_dev(div5, label2);
+    			append_dev(label2, h44);
+    			append_dev(h44, t16);
+    			append_dev(h44, span1);
+    			append_dev(label2, t18);
+    			append_dev(label2, input1);
+    			set_input_value(input1, /*transactionBalance*/ ctx[3]);
+    			append_dev(form, t19);
+    			append_dev(form, div6);
+    			append_dev(div6, label3);
+    			append_dev(label3, h45);
+    			append_dev(h45, t20);
+    			append_dev(h45, span2);
+    			append_dev(label3, t22);
     			append_dev(label3, select);
     			append_dev(select, option0);
     			append_dev(select, option1);
-    			select_option(select, /*transactionType*/ ctx[5]);
-    			append_dev(form, t17);
-    			if (if_block) if_block.m(form, null);
-    			append_dev(form, t18);
+    			select_option(select, /*transactionType*/ ctx[4]);
+    			append_dev(form, t25);
     			append_dev(form, button);
     			append_dev(button, img1);
 
@@ -3595,8 +3820,8 @@ var app = (function () {
     				dispose = [
     					action_destroyer(link.call(null, a)),
     					listen_dev(input0, "input", /*input0_input_handler*/ ctx[7]),
-    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[8]),
-    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[9]),
+    					listen_dev(textarea, "input", /*textarea_input_handler*/ ctx[8]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[9]),
     					listen_dev(select, "change", /*select_change_handler*/ ctx[10]),
     					listen_dev(button, "click", prevent_default(/*addTransaction*/ ctx[6]), false, true, false)
     				];
@@ -3609,40 +3834,70 @@ var app = (function () {
     				attr_dev(a, "href", a_href_value);
     			}
 
-    			if (dirty & /*transactionName*/ 4 && input0.value !== /*transactionName*/ ctx[2]) {
-    				set_input_value(input0, /*transactionName*/ ctx[2]);
+    			if (dirty & /*transactionName*/ 2 && input0.value !== /*transactionName*/ ctx[1]) {
+    				set_input_value(input0, /*transactionName*/ ctx[1]);
     			}
 
-    			if (dirty & /*transactionDesc*/ 8 && input1.value !== /*transactionDesc*/ ctx[3]) {
-    				set_input_value(input1, /*transactionDesc*/ ctx[3]);
-    			}
-
-    			if (dirty & /*transactionBalance*/ 16 && to_number(input2.value) !== /*transactionBalance*/ ctx[4]) {
-    				set_input_value(input2, /*transactionBalance*/ ctx[4]);
-    			}
-
-    			if (dirty & /*transactionType*/ 32) {
-    				select_option(select, /*transactionType*/ ctx[5]);
-    			}
-
-    			if (/*errorMsg*/ ctx[1]) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
+    			if (/*isTouched*/ ctx[5]) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$4(ctx);
-    					if_block.c();
-    					if_block.m(form, t18);
+    					if_block0 = create_if_block_2$1(ctx);
+    					if_block0.c();
+    					if_block0.m(div1, t5);
     				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (dirty & /*transactionName*/ 2 && t6_value !== (t6_value = /*transactionName*/ ctx[1].length + "")) set_data_dev(t6, t6_value);
+
+    			if (dirty & /*transactionName*/ 2 && h41_class_value !== (h41_class_value = "" + (null_to_empty(/*transactionName*/ ctx[1].length > 30
+    			? "char-count red"
+    			: "char-count") + " svelte-9tl5rw"))) {
+    				attr_dev(h41, "class", h41_class_value);
+    			}
+
+    			if (dirty & /*transactionDesc*/ 4) {
+    				set_input_value(textarea, /*transactionDesc*/ ctx[2]);
+    			}
+
+    			if (/*isTouched*/ ctx[5]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block$4(ctx);
+    					if_block1.c();
+    					if_block1.m(div3, t12);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (dirty & /*transactionDesc*/ 4 && t13_value !== (t13_value = /*transactionDesc*/ ctx[2].length + "")) set_data_dev(t13, t13_value);
+
+    			if (dirty & /*transactionDesc*/ 4 && h43_class_value !== (h43_class_value = "" + (null_to_empty(/*transactionDesc*/ ctx[2].length > 200
+    			? "char-count red"
+    			: "char-count") + " svelte-9tl5rw"))) {
+    				attr_dev(h43, "class", h43_class_value);
+    			}
+
+    			if (dirty & /*transactionBalance*/ 8 && to_number(input1.value) !== /*transactionBalance*/ ctx[3]) {
+    				set_input_value(input1, /*transactionBalance*/ ctx[3]);
+    			}
+
+    			if (dirty & /*transactionType*/ 16) {
+    				select_option(select, /*transactionType*/ ctx[4]);
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(form);
-    			if (if_block) if_block.d();
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
     			mounted = false;
     			run_all(dispose);
     		}
@@ -3663,19 +3918,29 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Create_transaction", slots, []);
     	let { params = {} } = $$props;
-    	let errorMsg = "";
     	let transactionName = "";
     	let transactionDesc = "";
     	let transactionBalance = 0;
     	let transactionType = "debit";
+    	let isTouched = false;
 
     	function addTransaction() {
     		if (!transactionName || transactionBalance == null) {
-    			$$invalidate(1, errorMsg = "Fill all the required details");
+    			$$invalidate(5, isTouched = true);
     			return;
     		}
 
-    		$$invalidate(1, errorMsg = "");
+    		if (transactionName.length > 30) {
+    			$$invalidate(5, isTouched = true);
+    			return;
+    		}
+
+    		if (transactionDesc.length > 200) {
+    			$$invalidate(5, isTouched = true);
+    			return;
+    		}
+
+    		$$invalidate(5, isTouched = false);
 
     		wallet.addTransaction(
     			{
@@ -3701,22 +3966,22 @@ var app = (function () {
 
     	function input0_input_handler() {
     		transactionName = this.value;
-    		$$invalidate(2, transactionName);
+    		$$invalidate(1, transactionName);
+    	}
+
+    	function textarea_input_handler() {
+    		transactionDesc = this.value;
+    		$$invalidate(2, transactionDesc);
     	}
 
     	function input1_input_handler() {
-    		transactionDesc = this.value;
-    		$$invalidate(3, transactionDesc);
-    	}
-
-    	function input2_input_handler() {
     		transactionBalance = to_number(this.value);
-    		$$invalidate(4, transactionBalance);
+    		$$invalidate(3, transactionBalance);
     	}
 
     	function select_change_handler() {
     		transactionType = select_value(this);
-    		$$invalidate(5, transactionType);
+    		$$invalidate(4, transactionType);
     	}
 
     	$$self.$$set = $$props => {
@@ -3728,21 +3993,21 @@ var app = (function () {
     		push,
     		link,
     		params,
-    		errorMsg,
     		transactionName,
     		transactionDesc,
     		transactionBalance,
     		transactionType,
+    		isTouched,
     		addTransaction
     	});
 
     	$$self.$inject_state = $$props => {
     		if ("params" in $$props) $$invalidate(0, params = $$props.params);
-    		if ("errorMsg" in $$props) $$invalidate(1, errorMsg = $$props.errorMsg);
-    		if ("transactionName" in $$props) $$invalidate(2, transactionName = $$props.transactionName);
-    		if ("transactionDesc" in $$props) $$invalidate(3, transactionDesc = $$props.transactionDesc);
-    		if ("transactionBalance" in $$props) $$invalidate(4, transactionBalance = $$props.transactionBalance);
-    		if ("transactionType" in $$props) $$invalidate(5, transactionType = $$props.transactionType);
+    		if ("transactionName" in $$props) $$invalidate(1, transactionName = $$props.transactionName);
+    		if ("transactionDesc" in $$props) $$invalidate(2, transactionDesc = $$props.transactionDesc);
+    		if ("transactionBalance" in $$props) $$invalidate(3, transactionBalance = $$props.transactionBalance);
+    		if ("transactionType" in $$props) $$invalidate(4, transactionType = $$props.transactionType);
+    		if ("isTouched" in $$props) $$invalidate(5, isTouched = $$props.isTouched);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3751,15 +4016,15 @@ var app = (function () {
 
     	return [
     		params,
-    		errorMsg,
     		transactionName,
     		transactionDesc,
     		transactionBalance,
     		transactionType,
+    		isTouched,
     		addTransaction,
     		input0_input_handler,
+    		textarea_input_handler,
     		input1_input_handler,
-    		input2_input_handler,
     		select_change_handler
     	];
     }

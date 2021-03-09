@@ -4,6 +4,12 @@
 
 </script>
 <section>
+    <a href="/create" use:link>
+        <button class="add-wallet">
+            <div>Add Wallet</div>
+            +
+        </button>
+    </a>
     <div class="total-balance">
         <h3>Total Balance</h3>
         <h2>₹{$wallet.reduce((sum, wallet) => sum + wallet.balance, 0)}</h2>
@@ -25,18 +31,14 @@
     {:else}
         <h3 class="placeholder">No Wallets here.</h3>
     {/if}
-    <a href="/create" use:link>
-        <button class="add-wallet">
-            <div>Add Wallet</div>
-            +
-        </button>
-    </a>
 </section>
 <style type="text/scss">
     @import '../styles/_main.scss';
     section {
         padding: 16px;
         width: 400px;
+        display: flex;
+        flex-direction: column;
         .total-balance {
             display: flex;
             align-items: center;
