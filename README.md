@@ -8,4 +8,3 @@
 - I will be working on this part time, adding some more features like migrating storage from localstorage to IndexedDB, Adding Export and Import Options etc.
 - If you are using the app and find it helpful, A ⭐ is appreciated. 
 - Feel free to create issues if you found any while using the app.
-- This app is live [here](https://mini-bank.netlify.app/)
